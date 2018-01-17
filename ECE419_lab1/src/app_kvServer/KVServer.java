@@ -77,8 +77,12 @@ public class KVServer implements IKVServer extends Thread {
 
 	@Override
     public boolean inStorage(String key){
-		// TODO Auto-generated method stub
-		return false;
+		String inStoreString = searchStorage(key);
+        if(inStoreString != null) {
+            return (true);
+        } else {
+		    return (false);
+        }
 	}
 
 	@Override
