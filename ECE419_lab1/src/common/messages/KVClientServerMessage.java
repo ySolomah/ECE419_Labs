@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class KVClientServerMessage implements KVMessage, Serializable {
     private static final long serialVersionUID = 3735928559L;
@@ -84,6 +85,47 @@ public class KVClientServerMessage implements KVMessage, Serializable {
             }
         }
         return to_return;
+    }
+    private static byte[] move_buffers(byte[] msgBytes, byte[] bufferBytes, int length) {
+        byte[] to_return = new byte[msgBytes.length + length];
+        System.arraycopy(msgBytes, 0, to_return, 0, msgBytes.length);
+        System.arraycopy(bufferBytes, 0, to_return, msgBytes.length, msgBytes.length + length);
+        return to_return;
+    }
+
+    public static KVMessage receiveMessage(InputStream _input) throws IOException{
+        int BUFFER_SIZE = 1024;
+        int index = 0;
+        byte[] msgBytes = null, tmp = null;
+        byte[] bufferBytes = new byte[BUFFER_SIZE]; 
+
+        // first 4 bytes will be the length of the message
+        byte read = (byte) _input.read();
+        int size = 0x0000;
+        for(int i = 0; i < 4; ++i) {
+            size += ((int) read) << (8 * (3 - i));
+            read = (byte) _input.read();
+        }
+
+        // TODO Logger for size
+        
+        // get the bytes now
+        for(int i = 0; i < size; ++i) {
+            if(index == BUFFER_SIZE) {
+                // expand and copy
+                msgBytes = move_buffers(msgBytes, bufferBytes, BUFFER_SIZE);
+                index = 0;
+            }
+            bufferBytes[index] = read;
+            read = (byte) _input.read();
+            index++;
+        }
+
+        // copy the rest to the message
+        msgBytes = move_buffers(msgBytes, bufferBytes, index);
+        KVMessage k = deserialize(msgBytes);
+
+        return k;  
     }
 
     public static KVClientServerMessage deserialize(byte[] bytes_to_obj) {
