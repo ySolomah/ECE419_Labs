@@ -3,7 +3,16 @@ package KVCache;
 import java.util.concurrent.*;
 
 public class KVLRUCache implements IKVCache {
-    
+
+
+    public ConcurrentHashMap<String, String> cache;
+    public ConcurrentLinkedDeque<CacheNode> policyOrder;
+
+    public int cacheSize;
+
+
+
+
     public KVLRUCache(int cacheSize) {
         cache = new ConcurentHashMap<String, String>();
         policyOrder = new ConcurrentLinkedDeque<CacheNode>();

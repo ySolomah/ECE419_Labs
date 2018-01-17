@@ -4,6 +4,13 @@ import java.util.concurrent.*;
 
 public class KVFIFOCache implements IKVCache {
 
+    public ConcurrentHashMap<String, String> cache;
+    public ConcurrentLinkedDeque<CacheNode> policyOrder;
+
+    public int cacheSize;
+
+
+
     public KVFIFOCache(int cacheSize) {
         cache = new ConcurrentHashMap<String, String>();
         policyOrder = new ConcurrentLinkedDeque<CacheNode>();

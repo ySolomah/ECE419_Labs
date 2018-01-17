@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 
-import logging.LogSetup;
+import logger.LogSetup;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -13,7 +13,9 @@ import org.apache.log4j.Logger;
 import java.util.*;
 import java.io.*;
 
-public class KVServer implements IKVServer extends Thread {
+import KVCache.*;
+
+public class KVServer extends Thread implements IKVServer {
 
     class kvContainer {
         String key;
@@ -25,8 +27,8 @@ public class KVServer implements IKVServer extends Thread {
     }
 
     protected ArrayList<Thread> clientThreads;
-    protected KV_Server_Cache kvCache;
-    protected port;
+    protected IKVCache kvCache;
+    protected int port;
     protected int cacheSize;
     protected String Strategy;
     protected CacheStrategy cacheStrategy;
@@ -123,7 +125,9 @@ public class KVServer implements IKVServer extends Thread {
                         return(lineSplit[1]);
                     }
                 }
-            }
+        } catch (Exception e) {
+            
+        }
         return(null);
     }
 
@@ -133,7 +137,7 @@ public class KVServer implements IKVServer extends Thread {
             public void run() {
                 putCache(key, value);
             }
-        }
+        };
         cacheThread.run();
         putKVSyn(key, value);
         cacheThread.join();
@@ -153,10 +157,10 @@ public class KVServer implements IKVServer extends Thread {
         // TODO
     }
 
-    private synchronized void putKVSyn throws Exception(
+    private synchronized void putKVSyn(
             String key,
             String value
-            ) {
+            ) throws Exception {
         boolean completedRead = false;
         ArrayList<kvContainer> keyValues = new ArrayList<String>();
 
@@ -177,28 +181,27 @@ public class KVServer implements IKVServer extends Thread {
                         } else {
                             keyValue[1] = value;
                             foundKey = true;
-                        {
-                    }
-                    keyValues.add(new kvContainer(
+                        }
+                        keyValues.add(new kvContainer(
                                 keyValue[0],
                                 keyValue[1]
                                 )
-                            );
-                    
-                }
-                if(!foundKey) {
-                    if(value == null) {
-                        throw Exception("Cannot find and delete KV with key: " + key);
+                        );                
                     }
-                    keyValues.add(new kvContainer(
-                                key,
-                                value
-                                )
-                            );
-                    foundKey = true;
+                    if(!foundKey) {
+                        if(value == null) {
+                            throw Exception("Cannot find and delete KV with key: " + key);
+                        }
+                        keyValues.add(new kvContainer(
+                                    key,
+                                    value
+                                    )
+                                );
+                        foundKey = true;
+                    }
+                    file.close();
+                    completedRead = true;
                 }
-                file.close()
-                completedRead = true;
             }
         } catch (FileNotFoundException fnfe) {
         } catch (IOException ioe) {
