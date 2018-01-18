@@ -1,0 +1,126 @@
+2018-01-18 14:57:27,102 INFO  [Thread-0] root: initialize server ...
+2018-01-18 14:57:27,105 INFO  [Thread-0] root: Server listening on port: 40377
+2018-01-18 15:07:00,077 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:07:00,080 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:12:23,660 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:12:23,663 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:13:38,740 INFO  [main] root: Beginning test suite
+2018-01-18 15:13:38,740 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:13:38,741 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:13:38,742 INFO  [main] root: Put KV: Hello with value: 2
+2018-01-18 15:13:38,742 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:13:38,743 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:15:07,076 INFO  [main] root: Beginning test suite
+2018-01-18 15:15:07,076 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:15:07,076 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:15:07,078 INFO  [main] root: Put KV: Hello with value: 2
+2018-01-18 15:15:07,078 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:15:07,079 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:17:19,528 INFO  [main] root: Beginning test suite
+2018-01-18 15:17:19,528 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:17:19,528 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:17:19,529 INFO  [main] root: Put KV: Hello with value: 2
+2018-01-18 15:17:19,530 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:17:19,531 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:17:54,801 INFO  [main] root: Beginning test suite
+2018-01-18 15:17:54,801 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:17:54,801 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:17:54,801 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 15:17:54,802 INFO  [main] root: Put KV: Hello with value: 2
+2018-01-18 15:17:54,802 INFO  [main] root: Inserting into cache: Hello with value: 2
+2018-01-18 15:17:54,803 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:17:54,803 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 15:17:54,803 INFO  [main] root: Key in storage: Hello with value: 2
+2018-01-18 15:17:54,804 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:18:34,073 INFO  [main] root: Beginning test suite
+2018-01-18 15:18:34,073 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:18:34,074 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:18:34,074 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 15:18:34,075 INFO  [main] root: Put KV: Hello with value: 2
+2018-01-18 15:18:34,075 INFO  [main] root: Inserting into cache: Hello with value: 2
+2018-01-18 15:18:34,075 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:18:34,075 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 15:18:34,076 INFO  [main] root: Key in storage: Hello with value: 2
+2018-01-18 15:18:34,076 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:18:46,862 INFO  [main] root: Beginning test suite
+2018-01-18 15:18:46,862 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:18:46,863 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:18:46,863 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 15:18:46,864 INFO  [main] root: Put KV: Hello with value: 2
+2018-01-18 15:18:46,864 INFO  [main] root: Inserting into cache: Hello with value: 2
+2018-01-18 15:18:46,864 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:18:46,864 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 15:18:46,865 INFO  [main] root: Key in cache: Hello with value: 2
+2018-01-18 15:18:46,865 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:27:41,091 INFO  [main] root: Beginning test suite
+2018-01-18 15:27:41,091 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:27:41,091 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:27:41,092 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 15:27:41,093 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:27:41,093 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 15:27:41,093 INFO  [main] root: Key in cache: Hello with value: 1
+2018-01-18 15:27:41,094 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:30:28,006 INFO  [main] root: Beginning test suite
+2018-01-18 15:30:28,006 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:30:28,007 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:30:28,007 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 15:30:28,008 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:30:28,008 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 15:30:28,008 INFO  [main] root: Key in cache: Hello with value: 1
+2018-01-18 15:30:28,009 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:36:13,852 INFO  [main] root: Beginning test suite
+2018-01-18 15:36:13,852 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:36:13,852 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:36:13,852 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 15:36:13,852 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 15:36:13,854 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:36:13,878 ERROR [main] root: Failed Simple test
+2018-01-18 15:39:26,101 INFO  [main] root: Beginning test suite
+2018-01-18 15:39:26,101 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:39:26,101 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:39:26,101 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 15:39:26,101 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 15:39:26,103 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:39:26,156 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:39:26,156 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 15:39:26,156 INFO  [main] root: Putting Jum with value: 3 into file kv.txt
+2018-01-18 15:39:26,157 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 15:39:26,212 INFO  [main] root: Key in cache: Hello with value: 1
+2018-01-18 15:41:38,733 INFO  [main] root: Beginning test suite
+2018-01-18 15:41:38,733 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:41:38,733 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:41:38,734 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 15:41:38,734 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 15:41:38,734 INFO  [main] root: Read line in kv.txt'Jum 3 '
+2018-01-18 15:41:38,736 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:41:38,774 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:41:38,774 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 15:41:38,774 INFO  [main] root: Putting Jum with value: 3 into file kv.txt
+2018-01-18 15:41:38,775 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 15:41:38,823 INFO  [main] root: Key in cache: Hello with value: 1
+2018-01-18 15:46:53,703 INFO  [main] root: Beginning test suite
+2018-01-18 15:46:53,703 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:46:53,703 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:46:53,703 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 15:46:53,704 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 15:46:53,704 INFO  [main] root: Read line in kv.txt'Jum 3 '
+2018-01-18 15:46:53,706 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:46:53,796 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:46:53,796 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 15:46:53,796 INFO  [main] root: Putting Jum with value: 3 into file kv.txt
+2018-01-18 15:46:53,797 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 15:46:53,856 INFO  [main] root: Key in cache: Hello with value: 1
+2018-01-18 15:49:06,780 INFO  [main] root: Beginning test suite
+2018-01-18 15:49:06,780 INFO  [Thread-0] root: initialize server ...
+2018-01-18 15:49:06,781 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 15:49:06,781 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 15:49:06,781 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 15:49:06,782 INFO  [main] root: Read line in kv.txt'Jum 3 '
+2018-01-18 15:49:06,783 INFO  [Thread-0] root: Server listening on port: 9000
+2018-01-18 15:49:06,890 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 15:49:06,890 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 15:49:06,890 INFO  [main] root: Putting Jum with value: 3 into file kv.txt
+2018-01-18 15:49:06,891 INFO  [main] root: Read line in kv.txt'Jum 3 '
+2018-01-18 15:49:06,891 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 15:49:06,922 INFO  [main] root: Key in storage: Hello with value: 1
+2018-01-18 15:49:06,922 INFO  [main] root: Key in cache: Hello with value: 1

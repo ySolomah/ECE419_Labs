@@ -19,6 +19,8 @@ import java.nio.charset.Charset;
 
 import KVCache.*;
 
+import client_connection.ClientConnection; 
+
 public class KVServer extends Thread implements IKVServer {
 
     class kvContainer {
@@ -34,7 +36,7 @@ public class KVServer extends Thread implements IKVServer {
     protected IKVCache kvCache;
     protected int port;
     protected int cacheSize;
-    protected String Strategy;
+    protected String strategy;
     protected CacheStrategy cacheStrategy;
     protected boolean running;
     protected ServerSocket serverSocket;
@@ -53,7 +55,23 @@ public class KVServer extends Thread implements IKVServer {
 	 *           and "LFU".
 	 */
 	public KVServer(int port, int cacheSize, String strategy) {
-		// TODO Auto-generated method stub
+        this.clientThreads = new ArrayList<Thread>();
+		this.port = port;
+        this.cacheSize = cacheSize;
+        this.strategy = strategy;
+        if(strategy.equals("LRU")) {
+            System.out.println("LRU CACHE");
+            cacheStrategy = CacheStrategy.LRU;
+            kvCache = new KVLRUCache(cacheSize);
+        } else if (strategy.equals("LFU")) {
+            System.out.println("LFU CACHE");
+            cacheStrategy = CacheStrategy.LFU;
+            kvCache = new KVLFUCache(cacheSize);
+        } else {
+            System.out.println("FIFO CACHE");
+            cacheStrategy = CacheStrategy.FIFO;
+            kvCache = new KVFIFOCache(cacheSize);
+        }
 	}
 
 	@Override
@@ -84,6 +102,7 @@ public class KVServer extends Thread implements IKVServer {
     public boolean inStorage(String key){
 		String inStoreString = searchStorage(key);
         if(inStoreString != null) {
+            logger.info("Key in storage: " + key + " with value: " + inStoreString);
             return (true);
         } else {
 		    return (false);
@@ -94,6 +113,7 @@ public class KVServer extends Thread implements IKVServer {
     public boolean inCache(String key){
         String ret = kvCache.Get(key);
 		if(ret != null && !ret.isEmpty()) {
+            logger.info("Key in cache: " + key + " with value: " + ret);
             return(true);
         }
         return(false);
@@ -112,7 +132,6 @@ public class KVServer extends Thread implements IKVServer {
             }
         }
 		throw new Exception("Failed to find key: " + key);
-        return ("");
 	}
 
     public String searchStorage(String key) {
@@ -134,7 +153,8 @@ public class KVServer extends Thread implements IKVServer {
     }
 
 	@Override
-    public void putKV(String key, String value) throws Exception {
+    public synchronized void putKV(final String key,final String value) throws Exception {
+        logger.info("Put KV: " + key + " with value: " + value);
         Thread cacheThread = new Thread() {
             public void run() {
                 putCache(key, value);
@@ -146,86 +166,97 @@ public class KVServer extends Thread implements IKVServer {
         return;
 	}
 
-    private synchronized void putCache(
+    private void putCache(
             String key,
             String value
             ) {
-       // TODO 
+        if(value.equals("") || value.isEmpty()) {
+            logger.info("Deleting key: " + key);
+            kvCache.Delete(key);
+        } else {
+            logger.info("Inserting into cache: " + key + " with value: " + value);
+            kvCache.Insert(key, value);
+        }
     }
 
-    private void getCache(
+    private String getCache(
             String key
             ) {
-        // TODO
+        return(kvCache.Get(key));
     }
 
-    private synchronized void putKVSyn(
+    private void putKVSyn(
             String key,
             String value
             ) throws Exception {
+        logger.info("Putting " + key + " with value: " + value + " into file " + fileName);
         boolean completedRead = false;
         ArrayList<kvContainer> keyValues = new ArrayList<kvContainer>();
+        boolean foundKey = false;
 
         try{
-            RandomAccessFile file  = new RandomAccessFile(
-                fileName,
-                "rw"
+            FileReader file  = new FileReader(
+                fileName
                 );
-            boolean foundKey = false;
+            BufferedReader br = new BufferedReader(file);
             String line;
-            while( (line = file.readLine()) != null) {
+            while( (line = br.readLine()) != null) {
+                logger.info("Read line in " + fileName + "'" + line + "'");
                 String[] keyValue = line.split(" ");
-                if(keyValue.length >= 2) {
-                    if(!foundKey && keyValue[0].equals(key)) {
-                        if(value == null) {
-                            continue;
-                            foundKey = true;
-                        } else {
-                            keyValue[1] = value;
-                            foundKey = true;
-                        }
-                        keyValues.add(new kvContainer(
-                                keyValue[0],
-                                keyValue[1]
-                                )
-                        );                
+                if(!foundKey && keyValue[0].equals(key)) {
+                    foundKey = true;
+                    if(value == null) {
+                        continue;
+                    } else {
+                        keyValue[1] = value;
                     }
-                    if(!foundKey) {
-                        if(value == null) {
-                            throw new Exception("Cannot find and delete KV with key: " + key);
-                        }
-                        keyValues.add(new kvContainer(
-                                    key,
-                                    value
-                                    )
-                                );
-                        foundKey = true;
-                    }
-                    file.close();
-                    completedRead = true;
                 }
+            keyValues.add(new kvContainer(
+                    keyValue[0],
+                        keyValue[1]
+                        )
+                );                
             }
+            file.close();
         } catch (FileNotFoundException fnfe) {
+            logger.error("Failed to read file " + fileName);
+            fnfe.printStackTrace();
+            throw new Exception("Failed file");
         } catch (IOException ioe) {
             System.err.println(ioe);
+            logger.error("IOE: " + fileName);
+            ioe.printStackTrace();
+            throw new Exception("Failed file");
         }
-        
-        if(completedRead) {
-            Path fstream = Paths.get(
-                    "temp" + fileName
+
+        if(!foundKey) {
+            keyValues.add(new kvContainer(
+                        key,
+                        value
+                        )
                     );
-            for(kvContainer kvPair : keyValues) {
-                Files.write(fstream,
-                        (kvPair.key 
-                        + " " 
-                        + kvPair.value
-                        + " \n").getBytes()
-                        );
-            }
-            File renameTemp = new File("temp" + fileName);
-            File newFile = new File(renameTemp.getParent(), fileName);
-            Files.move(renameTemp.toPath(), newFile.toPath());
         }
+
+        
+        Path fstream = Paths.get(
+                "temp" + fileName
+                );
+        StringBuilder sb = new StringBuilder();
+        for(kvContainer kvPair : keyValues) {
+            sb.append(
+                    (kvPair.key 
+                    + " " 
+                    + kvPair.value
+                    + " \n")
+                    );
+        }
+        Files.write(fstream,
+                sb.toString().getBytes()
+                );
+        File renameTemp = new File("temp" + fileName);
+        File newFile = new File(renameTemp.getParent(), fileName);
+        newFile.delete();
+        Files.move(renameTemp.toPath(), newFile.toPath());
         return;
     }
 
@@ -238,18 +269,22 @@ public class KVServer extends Thread implements IKVServer {
 
 	@Override
     public void clearStorage(){
-
-       Path fstream = Paths.get(
-                "temp" + fileName
-                );
-        Files.write(fstream,
-                "".getBytes()
-                );
-        
-        File renameTemp = new File("temp" + fileName);
-        File newFile = new File(renameTemp.getParent(), fileName);
-        Files.move(renameTemp.toPath(), newFile.toPath());
-        return;
+        try {
+            Path fstream = Paths.get(
+                    "temp" + fileName
+                    );
+            Files.write(fstream,
+                    "".getBytes()
+                    );
+            
+            File renameTemp = new File("temp" + fileName);
+            File newFile = new File(renameTemp.getParent(), fileName);
+            Files.move(renameTemp.toPath(), newFile.toPath());
+            return;
+        } catch (IOException e) {
+            logger.error("Error! Unable to clear storage");
+            e.printStackTrace();
+        }
 	}
 
 	@Override
@@ -299,8 +334,8 @@ public class KVServer extends Thread implements IKVServer {
             while(isRunning()) {
                 try {
                     Socket client = serverSocket.accept();
-                    KVClientConnection conn =
-                        new KVClientConnection(client, this);
+                    ClientConnection conn =
+                        new ClientConnection(client, this);
                     Thread connThread = new Thread(conn);
                     clientThreads.add(connThread);
                     connThread.start();
@@ -327,6 +362,9 @@ public class KVServer extends Thread implements IKVServer {
                 String strategy = args[2];
                 KVServer ourServer = new KVServer(port, cacheSize, strategy);
                 ourServer.start();
+                /* TEST SUITE */
+                logger.info("Beginning test suite");
+                simpleReadWrite(ourServer);
             }
         } catch (IOException e) {
             System.out.println("Error! Unable to initialize logger!");
@@ -336,6 +374,19 @@ public class KVServer extends Thread implements IKVServer {
             System.out.println("Error! Invalid argument <port> or <cacheSize>! Not a number!");
             nfe.printStackTrace();
             System.exit(1);
+        }
+    }
+
+    // TEST SUITE
+    public static void simpleReadWrite(KVServer ctx) {
+        try{
+            ctx.putKV("Hello", "1");
+            ctx.putKV("Jum", "3");
+            ctx.inStorage("Hello");
+            ctx.inCache("Hello");
+        } catch (Exception e) {
+            logger.error("Failed Simple test");
+            e.printStackTrace();
         }
     }
 }
