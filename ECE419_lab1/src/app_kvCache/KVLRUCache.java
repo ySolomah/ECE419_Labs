@@ -1,6 +1,7 @@
 package KVCache;
 
 import java.util.concurrent.*;
+import org.apache.log4j.Logger;
 
 public class KVLRUCache implements IKVCache {
 
@@ -9,14 +10,15 @@ public class KVLRUCache implements IKVCache {
     public ConcurrentLinkedDeque<CacheNode> policyOrder;
 
     public int cacheSize;
+    private Logger logger;
 
 
 
-
-    public KVLRUCache(int cacheSize) {
+    public KVLRUCache(int cacheSize, Logger logger) {
         cache = new ConcurrentHashMap<String, String>();
         policyOrder = new ConcurrentLinkedDeque<CacheNode>();
         this.cacheSize = cacheSize;
+        this.logger = logger;
     }
 
     public void Clear() {
@@ -30,7 +32,10 @@ public class KVLRUCache implements IKVCache {
         if(foundVal != null) {
             for (CacheNode node : policyOrder) {
                 if(node.key.equals(key)) {
-                    policyOrder.remove(key);
+                    boolean gotNode = policyOrder.remove(node);
+                    if(!gotNode) {
+                        logger.info("Failed to remove node: " + node.key);
+                    }
                     policyOrder.push(node);
                 }
             }
@@ -40,24 +45,37 @@ public class KVLRUCache implements IKVCache {
 
     public void Delete(String key) {
         cache.remove(key);
-        policyOrder.remove(key);
+        for(CacheNode node : policyOrder) {
+            if(node.key.equals(key)) {
+                policyOrder.remove(node);
+            }
+        }
     }
 
     public void Insert(String key, String value) {
+        
         for (CacheNode node : policyOrder) {
             if(node.key.equals(key)) {
+                logger.info("Replacing " + key);
                 node.value = value;
+                boolean gotNode = policyOrder.remove(node);
+                if(!gotNode) {
+                    logger.info("Failed to remove node: " + node.key);
+                }
+                policyOrder.push(node);
                 cache.replace(key, value);
                 return;
             }
         }
         
+        logger.info("Pushing: " + key + " with value: " + value);
         CacheNode mruNode = new CacheNode(key, value, -1);
         policyOrder.push(mruNode);
         cache.put(key, value);
         while(policyOrder.size() > cacheSize) {
             CacheNode removeNode = policyOrder.removeLast();
             cache.remove(removeNode.key);
+            logger.info("Removing: " + removeNode.key + " with value: " + removeNode.value);
         }
         return;
     }

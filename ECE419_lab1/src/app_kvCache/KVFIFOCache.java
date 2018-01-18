@@ -1,6 +1,7 @@
 package KVCache;
 
 import java.util.concurrent.*;
+import org.apache.log4j.Logger;
 
 public class KVFIFOCache implements IKVCache {
 
@@ -8,13 +9,15 @@ public class KVFIFOCache implements IKVCache {
     public ConcurrentLinkedDeque<CacheNode> policyOrder;
 
     public int cacheSize;
+    private Logger logger;
 
 
 
-    public KVFIFOCache(int cacheSize) {
+    public KVFIFOCache(int cacheSize, Logger logger) {
         cache = new ConcurrentHashMap<String, String>();
         policyOrder = new ConcurrentLinkedDeque<CacheNode>();
         this.cacheSize = cacheSize;
+        this.logger = logger;
     }
 
     public void Clear() {
@@ -29,7 +32,11 @@ public class KVFIFOCache implements IKVCache {
 
     public void Delete(String key) {
         cache.remove(key);
-        policyOrder.remove(key);
+        for(CacheNode node : policyOrder) {
+            if(node.key.equals(key)) {
+                policyOrder.remove(node);
+            }
+        }
         return;
     }
 

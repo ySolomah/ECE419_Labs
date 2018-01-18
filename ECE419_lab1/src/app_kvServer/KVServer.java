@@ -62,15 +62,15 @@ public class KVServer extends Thread implements IKVServer {
         if(strategy.equals("LRU")) {
             System.out.println("LRU CACHE");
             cacheStrategy = CacheStrategy.LRU;
-            kvCache = new KVLRUCache(cacheSize);
+            kvCache = new KVLRUCache(cacheSize, logger);
         } else if (strategy.equals("LFU")) {
             System.out.println("LFU CACHE");
             cacheStrategy = CacheStrategy.LFU;
-            kvCache = new KVLFUCache(cacheSize);
+            kvCache = new KVLFUCache(cacheSize, logger);
         } else {
             System.out.println("FIFO CACHE");
             cacheStrategy = CacheStrategy.FIFO;
-            kvCache = new KVFIFOCache(cacheSize);
+            kvCache = new KVFIFOCache(cacheSize ,logger);
         }
 	}
 
@@ -355,6 +355,8 @@ public class KVServer extends Thread implements IKVServer {
                 clearCacheAndStorage(ourServer);
                 simpleOverWrite(ourServer);
                 simpleFifoCacheTest(ourServer);
+                simpleLruCacheTest(ourServer);
+                /* END TEST SUITE */
             }
         } catch (IOException e) {
             System.out.println("Error! Unable to initialize logger!");
@@ -433,6 +435,29 @@ public class KVServer extends Thread implements IKVServer {
             e.printStackTrace();
         }
     }
+
+
+    public static void simpleLruCacheTest(KVServer ctx) {
+        logger.info("SIMPLE LRU CACHE TEST");
+        clearCacheAndStorage(ctx);
+        try {
+            ctx.putKV("A", "1");
+            ctx.putKV("B", "1");
+            ctx.putKV("A", "2");
+            ctx.putKV("C", "1");
+            ctx.inCache("A");
+            ctx.inCache("B");
+            ctx.inCache("C");
+            ctx.putKV("A", "3");
+            ctx.inCache("A");
+            ctx.inCache("B");
+            ctx.inCache("C");
+        } catch (Exception e) {
+            logger.error("fifo test fail");
+            e.printStackTrace();
+        }
+    }
+
 }
 
 
