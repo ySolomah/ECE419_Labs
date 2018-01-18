@@ -195,29 +195,30 @@ public class KVServer extends Thread implements IKVServer {
         boolean foundKey = false;
 
         try{
-            FileReader file  = new FileReader(
+            File file  = new File(
                 fileName
                 );
-            BufferedReader br = new BufferedReader(file);
+            file.createNewFile();
+            FileReader mainFile = new FileReader(fileName);
+            BufferedReader br = new BufferedReader(mainFile);
             String line;
             while( (line = br.readLine()) != null) {
                 logger.info("Read line in " + fileName + "'" + line + "'");
                 String[] keyValue = line.split(" ");
                 if(!foundKey && keyValue[0].equals(key)) {
                     foundKey = true;
-                    if(value == null) {
+                    if(value.equals("") || value == null || value.isEmpty()) {
+                        logger.info("Clearing key: " + key + " from storage");
                         continue;
                     } else {
                         keyValue[1] = value;
                     }
                 }
-            keyValues.add(new kvContainer(
+                keyValues.add(new kvContainer(
                     keyValue[0],
-                        keyValue[1]
-                        )
-                );                
+                    keyValue[1]
+                ));
             }
-            file.close();
         } catch (FileNotFoundException fnfe) {
             logger.error("Failed to read file " + fileName);
             fnfe.printStackTrace();
@@ -269,22 +270,8 @@ public class KVServer extends Thread implements IKVServer {
 
 	@Override
     public void clearStorage(){
-        try {
-            Path fstream = Paths.get(
-                    "temp" + fileName
-                    );
-            Files.write(fstream,
-                    "".getBytes()
-                    );
-            
-            File renameTemp = new File("temp" + fileName);
-            File newFile = new File(renameTemp.getParent(), fileName);
-            Files.move(renameTemp.toPath(), newFile.toPath());
-            return;
-        } catch (IOException e) {
-            logger.error("Error! Unable to clear storage");
-            e.printStackTrace();
-        }
+        File file = new File(fileName);
+        file.delete();
 	}
 
 	@Override
@@ -365,6 +352,9 @@ public class KVServer extends Thread implements IKVServer {
                 /* TEST SUITE */
                 logger.info("Beginning test suite");
                 simpleReadWrite(ourServer);
+                clearCacheAndStorage(ourServer);
+                simpleOverWrite(ourServer);
+                simpleFifoCacheTest(ourServer);
             }
         } catch (IOException e) {
             System.out.println("Error! Unable to initialize logger!");
@@ -378,7 +368,16 @@ public class KVServer extends Thread implements IKVServer {
     }
 
     // TEST SUITE
+
+    public static void clearCacheAndStorage(KVServer ctx) {
+        logger.info("CLEAR CACHE AND STORAGE");
+        ctx.clearCache();
+        ctx.clearStorage();
+    }
+
     public static void simpleReadWrite(KVServer ctx) {
+        logger.info("SIMPLE READ WRITE TEST");
+        clearCacheAndStorage(ctx);
         try{
             ctx.putKV("Hello", "1");
             ctx.putKV("Jum", "3");
@@ -386,6 +385,51 @@ public class KVServer extends Thread implements IKVServer {
             ctx.inCache("Hello");
         } catch (Exception e) {
             logger.error("Failed Simple test");
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void simpleOverWrite(KVServer ctx) {
+        logger.info("SIMPLE OVER WRITE TEST");
+        clearCacheAndStorage(ctx);
+        try {
+            ctx.putKV("Hello", "1");
+            ctx.putKV("HelloThere", "2");
+            ctx.putKV("Hello", "3");
+            ctx.inStorage("Hello");
+            ctx.inStorage("HellowThere");
+            ctx.putKV("Hello", "");
+            ctx.inStorage("Hello");
+        } catch (Exception e) {
+            logger.error("Failed Simple test");
+            e.printStackTrace();
+        }
+    }
+
+    public static void simpleFifoCacheTest(KVServer ctx) {
+        logger.info("SIMPLE FIFO CACHE TEST");
+        clearCacheAndStorage(ctx);
+        try {
+            ctx.putKV("A", "1");
+            ctx.inCache("A");
+            ctx.inCache("B");
+            ctx.inCache("C");
+            ctx.putKV("B", "1");
+            ctx.inCache("A");
+            ctx.inCache("B");
+            ctx.inCache("C");
+            ctx.putKV("C", "1");
+            ctx.inCache("A");
+            ctx.inCache("B");
+            ctx.inCache("C");
+            ctx.putKV("A", "2");
+            ctx.putKV("A", "3");
+            ctx.inCache("A");
+            ctx.inCache("B");
+            ctx.inCache("C");
+        } catch (Exception e) {
+            logger.error("fifo test fail");
             e.printStackTrace();
         }
     }

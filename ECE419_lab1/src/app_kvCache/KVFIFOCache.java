@@ -46,7 +46,7 @@ public class KVFIFOCache implements IKVCache {
         policyOrder.push(fifoNode);
         cache.put(key, value);
         if(policyOrder.size() > cacheSize) {
-            CacheNode removeNode = policyOrder.removeFirst();
+            CacheNode removeNode = policyOrder.removeLast();
             cache.remove(removeNode.key);
         }
         return;
