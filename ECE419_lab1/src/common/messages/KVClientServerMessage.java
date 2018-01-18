@@ -8,12 +8,17 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.log4j.Logger;
+
 public class KVClientServerMessage implements KVMessage, Serializable {
     private static final long serialVersionUID = 3735928559L;
 
     private String key;
     private String value;
     private StatusType status;
+    
+    // do not serialize the logger
+    private transient static Logger logger = Logger.getRootLogger();
 
     // constructor is basic and initializes each of these attributes
     public KVClientServerMessage(StatusType s, String k, String v) {
@@ -56,6 +61,12 @@ public class KVClientServerMessage implements KVMessage, Serializable {
         for(int j = 0; j < 4; j++) {
             b[j] = (byte)((i >>> (3-j)*8) & (0x000000FF));
         }
+        logger.debug("Convert " + String.valueOf(i) + " to " +
+                    String.valueOf(b[3]) + ", " +
+                    String.valueOf(b[2]) + ", " +
+                    String.valueOf(b[1]) + ", " +
+                    String.valueOf(b[0]));
+                    
         return b;
     }
 
@@ -63,6 +74,7 @@ public class KVClientServerMessage implements KVMessage, Serializable {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream out = null;
         byte[] to_return = null;
+        logger.info("Serializing the message...");
         try {
             out = new ObjectOutputStream(bos);
             out.writeObject(this);
@@ -76,12 +88,15 @@ public class KVClientServerMessage implements KVMessage, Serializable {
             for(int i = 4; i < tmp.length + 4; i++) {
                 to_return[i] = tmp[i-4];
             }
+            logger.info("Serialization succeeded");
         } catch(IOException e) {
+            logger.error("Serialization failed - will return null");
         }
         finally {
             try {
                 bos.close();
             } catch (IOException ex) {
+                logger.error("Failed to close the byte array output stream");
             }
         }
         return to_return;
@@ -99,6 +114,7 @@ public class KVClientServerMessage implements KVMessage, Serializable {
         byte[] msgBytes = null, tmp = null;
         byte[] bufferBytes = new byte[BUFFER_SIZE]; 
 
+        logger.info("Receiving a message - will read size first");
         // first 4 bytes will be the length of the message
         byte read = (byte) _input.read();
         int size = 0x0000;
@@ -108,6 +124,7 @@ public class KVClientServerMessage implements KVMessage, Serializable {
         }
 
         // TODO Logger for size
+        logger.info("Size is: " + String.valueOf(size));
         
         // get the bytes now
         for(int i = 0; i < size; ++i) {
@@ -124,6 +141,7 @@ public class KVClientServerMessage implements KVMessage, Serializable {
         // copy the rest to the message
         msgBytes = move_buffers(msgBytes, bufferBytes, index);
         KVMessage k = deserialize(msgBytes);
+        logger.info("Successfully received message");
 
         return k;  
     }
@@ -135,16 +153,21 @@ public class KVClientServerMessage implements KVMessage, Serializable {
         try {
             in = new ObjectInputStream(bos);
             o = (KVClientServerMessage) in.readObject();
+            logger.info("Deserialized message successfully");
         } catch(IOException e) {
+            logger.error("Failed to deserialize: " + e.getCause().getMessage());
         }
         catch(ClassNotFoundException e) {
+            logger.error("Failed to find the class 'KVClientServerMessage'");
         }
         finally {
             try {
                 if(in != null) {
                     in.close();
                 }
+                logger.info("Successfully closed input stream");
             } catch (IOException ex) {
+                logger.error("Failed to close input stream: " + ex.getCause().getMessage());
             }
         }
         return o;
