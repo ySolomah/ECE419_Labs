@@ -14,7 +14,7 @@ public class KVLRUCache implements IKVCache {
 
 
     public KVLRUCache(int cacheSize) {
-        cache = new ConcurentHashMap<String, String>();
+        cache = new ConcurrentHashMap<String, String>();
         policyOrder = new ConcurrentLinkedDeque<CacheNode>();
         this.cacheSize = cacheSize;
     }
@@ -28,15 +28,19 @@ public class KVLRUCache implements IKVCache {
     public String Get(String key) {
         String foundVal = cache.get(key);
         if(foundVal != null) {
-            CacheNode mruNode = policyOrder.remove(key);
-            policyOrder.push(mruNode);
+            for (CacheNode node : policyOrder) {
+                if(node.key.equals(key)) {
+                    policyOrder.remove(key);
+                    policyOrder.push(node);
+                }
+            }
         }
         return(foundVal);
     }
 
     public void Delete(String key) {
         cache.remove(key);
-        policyCache.remove(key);
+        policyOrder.remove(key);
     }
 
     public void Insert(String key, String value) {
@@ -51,7 +55,7 @@ public class KVLRUCache implements IKVCache {
         CacheNode mruNode = new CacheNode(key, value, -1);
         policyOrder.push(mruNode);
         cache.put(key, value);
-        if(policyOrder.size() > cacheSize) {
+        while(policyOrder.size() > cacheSize) {
             CacheNode removeNode = policyOrder.removeLast();
             cache.remove(removeNode.key);
         }

@@ -12,6 +12,10 @@ import org.apache.log4j.Logger;
 
 import java.util.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.charset.Charset;
 
 import KVCache.*;
 
@@ -32,7 +36,6 @@ public class KVServer extends Thread implements IKVServer {
     protected int cacheSize;
     protected String Strategy;
     protected CacheStrategy cacheStrategy;
-    protected KVServer myServer;
     protected boolean running;
     protected ServerSocket serverSocket;
 
@@ -60,7 +63,7 @@ public class KVServer extends Thread implements IKVServer {
 
 	@Override
     public String getHostname(){
-		return serverSocket.getLocalHost().getHostName();
+		return serverSocket.getInetAddress().getCanonicalHostName();
 	}
 
 	@Override
@@ -89,8 +92,7 @@ public class KVServer extends Thread implements IKVServer {
 
 	@Override
     public boolean inCache(String key){
-        String ret = null;
-        ret = getCache(key);
+        String ret = kvCache.Get(key);
 		if(ret != null && !ret.isEmpty()) {
             return(true);
         }
@@ -100,7 +102,7 @@ public class KVServer extends Thread implements IKVServer {
 	@Override
     public String getKV(String key) throws Exception{
         String myString = null;
-        myString = kvCache.get(key);
+        myString = kvCache.Get(key);
         if(myString != null && !myString.isEmpty()) {
             return(myString);
         } else {
@@ -109,7 +111,7 @@ public class KVServer extends Thread implements IKVServer {
                 return(myString);
             }
         }
-		throw Exception("Failed to find key: " + key);
+		throw new Exception("Failed to find key: " + key);
         return ("");
 	}
 
@@ -162,7 +164,7 @@ public class KVServer extends Thread implements IKVServer {
             String value
             ) throws Exception {
         boolean completedRead = false;
-        ArrayList<kvContainer> keyValues = new ArrayList<String>();
+        ArrayList<kvContainer> keyValues = new ArrayList<kvContainer>();
 
         try{
             RandomAccessFile file  = new RandomAccessFile(
@@ -190,7 +192,7 @@ public class KVServer extends Thread implements IKVServer {
                     }
                     if(!foundKey) {
                         if(value == null) {
-                            throw Exception("Cannot find and delete KV with key: " + key);
+                            throw new Exception("Cannot find and delete KV with key: " + key);
                         }
                         keyValues.add(new kvContainer(
                                     key,
@@ -209,20 +211,20 @@ public class KVServer extends Thread implements IKVServer {
         }
         
         if(completedRead) {
-            FileWriter fstream = new FileWriter(
-                    "temp" + fileName,
-                    true
+            Path fstream = Paths.get(
+                    "temp" + fileName
                     );
-            BufferedWriter out = new BufferedWriter(fstream);
             for(kvContainer kvPair : keyValues) {
-                out.write(kvPair.key 
+                Files.write(fstream,
+                        (kvPair.key 
                         + " " 
                         + kvPair.value
-                        + " \n"
+                        + " \n").getBytes()
                         );
             }
-            out.close();
-            fstream.renameTo(fileName);
+            File renameTemp = new File("temp" + fileName);
+            File newFile = new File(renameTemp.getParent(), fileName);
+            Files.move(renameTemp.toPath(), newFile.toPath());
         }
         return;
     }
@@ -230,20 +232,23 @@ public class KVServer extends Thread implements IKVServer {
 
 	@Override
     public void clearCache(){
-        kvCache.clear();
+        kvCache.Clear();
         return;
 	}
 
 	@Override
     public void clearStorage(){
-        FileWriter fstream = new FilterWriter(
-                "temp" + fileName,
-                true
+
+       Path fstream = Paths.get(
+                "temp" + fileName
                 );
-        BufferedWriter out = new BufferedWriter(fstream);
-        out.write("");
-        out.close();
-        fstream.renameTo(fileName);
+        Files.write(fstream,
+                "".getBytes()
+                );
+        
+        File renameTemp = new File("temp" + fileName);
+        File newFile = new File(renameTemp.getParent(), fileName);
+        Files.move(renameTemp.toPath(), newFile.toPath());
         return;
 	}
 
@@ -271,15 +276,31 @@ public class KVServer extends Thread implements IKVServer {
         return;
 	}
 
+    public boolean initializeServer() {
+     logger.info("initialize server ...");
+        try {
+            serverSocket = new ServerSocket(port);
+            logger.info("Server listening on port: "
+                    + serverSocket.getLocalPort());
+            return (true);
+        } catch (IOException e) {
+            logger.error("Error! Cannt open server socket:");
+            if(e instanceof BindException) {
+                logger.error("Port " + port + " is already bound!");
+            }
+            return (false);
+        }
+    }
+
     public void run() {
         running = initializeServer();
 
-        if(serverSockey != null) {
+        if(serverSocket != null) {
             while(isRunning()) {
                 try {
                     Socket client = serverSocket.accept();
                     KVClientConnection conn =
-                        new ClientConnection(client, myServer);
+                        new KVClientConnection(client, this);
                     Thread connThread = new Thread(conn);
                     clientThreads.add(connThread);
                     connThread.start();
@@ -304,9 +325,8 @@ public class KVServer extends Thread implements IKVServer {
                 int port = Integer.parseInt(args[0]);
                 int cacheSize = Integer.parseInt(args[1]);
                 String strategy = args[2];
-                KVServer ourServer = KVServer(port, cacheSize, strategy);
-                this.myServer = ourServer;
-                this.myServer.start();
+                KVServer ourServer = new KVServer(port, cacheSize, strategy);
+                ourServer.start();
             }
         } catch (IOException e) {
             System.out.println("Error! Unable to initialize logger!");
