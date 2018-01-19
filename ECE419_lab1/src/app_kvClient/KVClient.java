@@ -1,6 +1,9 @@
 package app_kvClient;
 
 import client.KVCommInterface;
+import client.KVStore;
+import common.messages.KVMessage;
+import common.messages.KVMessage.StatusType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,96 +15,149 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 public class KVClient implements IKVClient {
-
-    @Override
-    public void newConnection(String hostname, int port) throws Exception{
-		try{
-			//Connect using KVCommInterface API
-			connect(hostname, port);
-
-		} catch (UnknownHostException e) {
-			printError("Unknown Host!");
-			logger.info("Unknown Host!", e);
-		} catch (IOException e) {
-			printError("Could not establish connection!");
-			logger.warn("Could not establish connection!", e);
-		}
+	private boolean running;
+	private static Logger logger = Logger.getRootLogger();
+	private static final String PROMPT = "KVClient> ";
+	private BufferedReader stdin;
+	private boolean stop = false;
+	private KVCommInterface kvStore = null;
+	private String serverAddress;
+	private int serverPort;
+    //Initialize to disconnected just to be extra safe.
+    private SocketStatus status = SocketStatus.DISCONNECTED;
+    
+    public enum SocketStatus{
+        CONNECTED,
+        DISCONNECTED,
+        CONNECTION_LOST
     }
 
     @Override
     public KVCommInterface getStore(){
-        // TODO Haven't figured out what this wants yet.
-        return null;
+        //Prof said only one client needs to run in the shell.
+        //We'll return the instance we have or make a new one
+        //if this is the first time this method gets invoked.
+        if (kvStore == null){
+            KVCommInterface newStore = new KVStore(serverAddress,serverPort);
+            return newStore;
+        }
+        else return kvStore;
     }
-	private static Logger logger = Logger.getRootLogger();
-	private static final String PROMPT = "KVClient> ";
-	private BufferedReader stdin;
-	private Client client = null;
-	private boolean stop = false;
-	
-	private String serverAddress;
-	private int serverPort;
-	
-	public void run() {
-		while(!stop) {
+
+    @Override
+    public void newConnection(String hostname, int port) throws Exception   {
+		try{
+            kvStore = getStore();
+            kvStore.connect();
+		} catch (Exception e) {
+			printError("Connection Failed!");
+			logger.info("Connection Failed!", e);
+		}
+    }
+    
+    public void run(){
+    	while(!stop) {
 			stdin = new BufferedReader(new InputStreamReader(System.in));
 			System.out.print(PROMPT);
-			
 			try {
 				String cmdLine = stdin.readLine();
 				this.handleCommand(cmdLine);
 			} catch (IOException e) {
 				stop = true;
-				printError("CLI does not respond - KVClient terminated ");
+				printError("CLI does not respond - Application terminated ");
+                logger.error("CLI does not respond - Application terminated ");
 			}
 		}
 	}
-	
+
 	private void handleCommand(String cmdLine) {
 		String[] tokens = cmdLine.split("\\s+");
 
 		if(tokens[0].equals("quit")) {	
 			stop = true;
-			disconnect();
-			System.out.println(PROMPT + "KVClient exit!");
+            //Disconnect the client if it was connected to server
+			if (running) kvStore.disconnect(); 
+            status = SocketStatus.DISCONNECTED;
+            running = false;
+			System.out.println(PROMPT + "Application exit!");
 		
 		} else if (tokens[0].equals("connect")){
 			if(tokens.length == 3) {
 				try{
-					serverAddress = tokens[1];
-					serverPort = Integer.parseInt(tokens[2]);
-					newConnection(serverAddress, serverPort);
-				} catch(NumberFormatException nfe) {
+                   if (!running && status != SocketStatus.CONNECTED){
+					    serverAddress = tokens[1];
+					    serverPort = Integer.parseInt(tokens[2]);
+                        //Start a new connection to the server
+					    newConnection(serverAddress, serverPort);
+				    } else{
+                        printError("Client already connected!");
+                        logger.error("Client already connected!");
+                    }
+                } catch(NumberFormatException nfe) {
 					printError("No valid address. Port must be a number!");
-					logger.info("Unable to parse argument <port>", nfe);
-				//} catch (UnknownHostException e) {
-				//	printError("Unknown Host!");
-				//	logger.info("Unknown Host!", e);
-				//} catch (IOException e) {
-				//	printError("Could not establish connection!");
-				//	logger.warn("Could not establish connection!", e);
+					logger.error("Unable to parse argument <port>", nfe);
 				} catch (Exception e){
 					printError("Failed to establish new connection.");
 					logger.error("Failed to establish new connection.",e);
 				}
+                running = true;
+                status = SocketStatus.CONNECTED;
 			} else {
-				printError("Invalid number of parameters!");
+				printError("Invalid number of parameters! Exactly 3 needed.");
+                logger.error("Invalid number of parameters! Exactly 3 needed.");
 			}
-			
-		} else  if (tokens[0].equals("put")) {
+            			
+		} else if (tokens[0].equals("get")){ 
+            if(tokens.length == 2){
+                if(running){
+                    try{
+                        KVMessage retMsg = kvStore.get(tokens[1]);
+                        if (retMsg.getStatus() == StatusType.GET_ERROR){
+                            printError("get failed!");
+                            logger.error("get failed!");
+                        }
+                    } catch (Exception e){
+                        printError("get failed!");
+                        logger.error("get failed!",e);
+                    }
+                }
+                else{
+                    printError("Not connected!");
+                    logger.error("Not connected!");
+                } 
+            } else {
+                printError("Invalid number of arguments! Only 2 allowed.");
+                logger.error("Invalid number of arguments! Only 2 allowed.");
+            }  
+        } else  if (tokens[0].equals("put")) {
 			if(tokens.length == 3) {
-				if(client != null && client.isRunning()){
-					//StringBuilder msg = new StringBuilder();
-					//for(int i = 1; i < tokens.length; i++) {
-					//	msg.append(tokens[i]);
-					//	if (i != tokens.length -1 ) {
-					//		msg.append(" ");
-					//	}
-					//}	
-					//sendMessage(msg.toString());
-					logger.info("Placeholder: putMsg() to be called here to handle the <key> <value> pair.");
-					putMsg(tokens[1], tokens[2]);
+				if(running){
+                    //running = true only if kvStore is
+                    //initialized with a port and address.
+                    try{
+                        KVMessage retMsg = kvStore.put(tokens[1], tokens[2]);
+                        //Check the return msg from the server
+                        if (retMsg.getStatus() == StatusType.PUT_ERROR){
+                            printError("put failed!");
+                            logger.error("put failed!");
+                        } else if (retMsg.getStatus() == StatusType.PUT_SUCCESS){
+                            logger.info("put successful! Value inserted.");
+                        } else if (retMsg.getStatus() == StatusType.PUT_UPDATE){
+                            logger.info("put successful! Value updated.");
+                        }
+                    } catch (Exception e){
+                        printError("put failed!");
+                        logger.error("put failed!",e);
+                    }
 				} else {
+                    if (status == SocketStatus.CONNECTED){
+                        status = SocketStatus.CONNECTION_LOST;
+                        printError("Connection lost!");
+                        logger.error("Connection lost!");
+                    } else {
+                        status = SocketStatus.DISCONNECTED;
+                        logger.error("Not connected!");
+                    }
 					printError("Not connected!");
 				}
 			} else {
@@ -109,7 +165,13 @@ public class KVClient implements IKVClient {
 			}
 			
 		} else if(tokens[0].equals("disconnect")) {
-			disconnect();
+			if (running) {
+                if (status == SocketStatus.CONNECTED)
+                    kvStore.disconnect();
+                status = SocketStatus.DISCONNECTED;
+                running = false;
+            }
+            else printError("Need to connect first!");
 			
 		} else if(tokens[0].equals("logLevel")) {
 			if(tokens.length == 2) {
@@ -132,48 +194,10 @@ public class KVClient implements IKVClient {
 			printHelp();
 		}
 	}
-	
-	private void putMsg(String key, String value){
-		try {
-			//client.sendMessage(new TextMessage(msg));
-			logger.info("Placeholder: Client needs to implement putMsg().\n");	
-		} catch (Exception e) {
-			printError("Unable to send message!");
-			logger.error("putMsg() failed.",e);
-			disconnect();
-		}
-	}
 
-	private String getMsg(String key){
-		String placeholder = "";
-		try{
-			//TODO: Implement getMsg() to get a real value from Server or error out.
-			logger.info("Placeholder: Client needs to implement getMsg().\n");
-			placeholder = "Placeholder";
-		} catch (Exception e){
-			printError("Unable to retrieve value for key " + key);
-			disconnect();
-		}
-		return placeholder;
-	}
-
-	private void connect(String address, int port) 
-			throws UnknownHostException, IOException {
-		client = new Client(address, port);
-		client.addListener(this);
-		client.start();
-	}
-	
-	private void disconnect() {
-		if(client != null) {
-			client.closeConnection();
-			client = null;
-		}
-	}
-	
 	private void printHelp() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(PROMPT).append("KV_CLIENT HELP (Usage):\n");
+		sb.append(PROMPT).append("KVClient HELP (Usage):\n");
 		sb.append(PROMPT);
 		sb.append("::::::::::::::::::::::::::::::::");
 		sb.append("::::::::::::::::::::::::::::::::\n");
@@ -231,18 +255,8 @@ public class KVClient implements IKVClient {
 		}
 	}
 	
-	//@Override
-	//public void handleNewMessage(TextMessage msg) {
-	//	if(!stop) {
-	//		System.out.println(msg.getMsg());
-	//		System.out.print(PROMPT);
-	//	}
-	//}
-	
-	@Override
 	public void handleStatus(SocketStatus status) {
 		if(status == SocketStatus.CONNECTED) {
-
 		} else if (status == SocketStatus.DISCONNECTED) {
 			System.out.print(PROMPT);
 			System.out.println("Connection terminated: " 
