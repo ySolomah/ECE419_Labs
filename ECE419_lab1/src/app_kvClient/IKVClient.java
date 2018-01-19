@@ -15,13 +15,4 @@ public interface IKVClient {
      * @return  instance of KVCommInterface
      */
     public KVCommInterface getStore();
-
-	/**
-	 * The possible status of a socket connection 
-	 */
-	public enum SocketStatus{CONNECTED, DISCONNECTED, CONNECTION_LOST};
-	/**
-	 * Handle a socket depending on the connection status
-	 */
-	public void handleStatus(SocketStatus status);
 }
