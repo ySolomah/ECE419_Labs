@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import org.apache.log4j.Logger;
 
@@ -57,17 +58,18 @@ public class KVClientServerMessage implements KVMessage, Serializable {
     }
 
     private byte[] int_to_bytes(int i) {
-        byte[] b = new byte[4];
-        for(int j = 0; j < 4; j++) {
-            b[j] = (byte)((i >>> (3-j)*8) & (0x000000FF));
-        }
+        byte[] to_ret =  ByteBuffer.allocate(4).putInt(i).array();
         logger.debug("Convert " + String.valueOf(i) + " to " +
-                    String.valueOf(b[3]) + ", " +
-                    String.valueOf(b[2]) + ", " +
-                    String.valueOf(b[1]) + ", " +
-                    String.valueOf(b[0]));
+                    String.valueOf(to_ret[3]) + ", " +
+                    String.valueOf(to_ret[2]) + ", " +
+                    String.valueOf(to_ret[1]) + ", " +
+                    String.valueOf(to_ret[0]));
                     
-        return b;
+        return to_ret;
+    }
+
+    private static int from_byte_array(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getInt();
     }
 
     public byte[] toBytes() {
@@ -104,25 +106,26 @@ public class KVClientServerMessage implements KVMessage, Serializable {
     private static byte[] move_buffers(byte[] msgBytes, byte[] bufferBytes, int length) {
         byte[] to_return = new byte[msgBytes.length + length];
         System.arraycopy(msgBytes, 0, to_return, 0, msgBytes.length);
-        System.arraycopy(bufferBytes, 0, to_return, msgBytes.length, msgBytes.length + length);
+        System.arraycopy(bufferBytes, 0, to_return, msgBytes.length, length);
         return to_return;
     }
 
     public static KVMessage receiveMessage(InputStream _input) throws IOException{
         int BUFFER_SIZE = 1024;
         int index = 0;
-        byte[] msgBytes = null, tmp = null;
+        byte[] msgBytes = new byte[0];
         byte[] bufferBytes = new byte[BUFFER_SIZE]; 
 
         logger.info("Receiving a message - will read size first");
         // first 4 bytes will be the length of the message
         byte read = (byte) _input.read();
+        byte[] temp = new byte[4];
         int size = 0x0000;
         for(int i = 0; i < 4; ++i) {
-            size += ((int) read) << (8 * (3 - i));
+            temp[i] = read;
             read = (byte) _input.read();
         }
-
+        size = from_byte_array(temp);
         // TODO Logger for size
         logger.info("Size is: " + String.valueOf(size));
         
