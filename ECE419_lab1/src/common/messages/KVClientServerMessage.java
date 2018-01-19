@@ -7,6 +7,9 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+
+import org.apache.log4j.Logger;
 
 public class KVClientServerMessage implements KVMessage, Serializable {
     private static final long serialVersionUID = 3735928559L;
@@ -14,6 +17,9 @@ public class KVClientServerMessage implements KVMessage, Serializable {
     private String key;
     private String value;
     private StatusType status;
+    
+    // do not serialize the logger
+    private transient static Logger logger = Logger.getRootLogger();
 
     // constructor is basic and initializes each of these attributes
     public KVClientServerMessage(StatusType s, String k, String v) {
@@ -52,17 +58,25 @@ public class KVClientServerMessage implements KVMessage, Serializable {
     }
 
     private byte[] int_to_bytes(int i) {
-        byte[] b = new byte[4];
-        for(int j = 0; j < 4; j++) {
-            b[j] = (byte)((i >>> (3-j)*8) & (0x000000FF));
-        }
-        return b;
+        byte[] to_ret =  ByteBuffer.allocate(4).putInt(i).array();
+        logger.debug("Convert " + String.valueOf(i) + " to " +
+                    String.valueOf(to_ret[3]) + ", " +
+                    String.valueOf(to_ret[2]) + ", " +
+                    String.valueOf(to_ret[1]) + ", " +
+                    String.valueOf(to_ret[0]));
+                    
+        return to_ret;
+    }
+
+    private static int from_byte_array(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getInt();
     }
 
     public byte[] toBytes() {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream out = null;
         byte[] to_return = null;
+        logger.info("Serializing the message...");
         try {
             out = new ObjectOutputStream(bos);
             out.writeObject(this);
@@ -76,12 +90,15 @@ public class KVClientServerMessage implements KVMessage, Serializable {
             for(int i = 4; i < tmp.length + 4; i++) {
                 to_return[i] = tmp[i-4];
             }
+            logger.info("Serialization succeeded");
         } catch(IOException e) {
+            logger.error("Serialization failed - will return null");
         }
         finally {
             try {
                 bos.close();
             } catch (IOException ex) {
+                logger.error("Failed to close the byte array output stream");
             }
         }
         return to_return;
@@ -89,25 +106,28 @@ public class KVClientServerMessage implements KVMessage, Serializable {
     private static byte[] move_buffers(byte[] msgBytes, byte[] bufferBytes, int length) {
         byte[] to_return = new byte[msgBytes.length + length];
         System.arraycopy(msgBytes, 0, to_return, 0, msgBytes.length);
-        System.arraycopy(bufferBytes, 0, to_return, msgBytes.length, msgBytes.length + length);
+        System.arraycopy(bufferBytes, 0, to_return, msgBytes.length, length);
         return to_return;
     }
 
     public static KVMessage receiveMessage(InputStream _input) throws IOException{
         int BUFFER_SIZE = 1024;
         int index = 0;
-        byte[] msgBytes = null, tmp = null;
+        byte[] msgBytes = new byte[0];
         byte[] bufferBytes = new byte[BUFFER_SIZE]; 
 
+        logger.info("Receiving a message - will read size first");
         // first 4 bytes will be the length of the message
         byte read = (byte) _input.read();
+        byte[] temp = new byte[4];
         int size = 0x0000;
         for(int i = 0; i < 4; ++i) {
-            size += ((int) read) << (8 * (3 - i));
+            temp[i] = read;
             read = (byte) _input.read();
         }
-
+        size = from_byte_array(temp);
         // TODO Logger for size
+        logger.info("Size is: " + String.valueOf(size));
         
         // get the bytes now
         for(int i = 0; i < size; ++i) {
@@ -124,6 +144,7 @@ public class KVClientServerMessage implements KVMessage, Serializable {
         // copy the rest to the message
         msgBytes = move_buffers(msgBytes, bufferBytes, index);
         KVMessage k = deserialize(msgBytes);
+        logger.info("Successfully received message");
 
         return k;  
     }
@@ -135,16 +156,21 @@ public class KVClientServerMessage implements KVMessage, Serializable {
         try {
             in = new ObjectInputStream(bos);
             o = (KVClientServerMessage) in.readObject();
+            logger.info("Deserialized message successfully");
         } catch(IOException e) {
+            logger.error("Failed to deserialize: " + e.getCause().getMessage());
         }
         catch(ClassNotFoundException e) {
+            logger.error("Failed to find the class 'KVClientServerMessage'");
         }
         finally {
             try {
                 if(in != null) {
                     in.close();
                 }
+                logger.info("Successfully closed input stream");
             } catch (IOException ex) {
+                logger.error("Failed to close input stream: " + ex.getCause().getMessage());
             }
         }
         return o;
