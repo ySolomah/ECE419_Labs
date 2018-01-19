@@ -1526,3 +1526,545 @@
 2018-01-18 18:13:32,532 INFO  [main] root: Read line in kv.txt'C 1 '
 2018-01-18 18:13:32,549 INFO  [main] root: Key in cache: A with value: 3
 2018-01-18 18:13:32,549 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 22:55:56,194 INFO  [main] root: Beginning test suite
+2018-01-18 22:55:56,195 INFO  [main] root: SIMPLE READ WRITE TEST
+2018-01-18 22:55:56,195 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:55:56,194 INFO  [Thread-0] root: initialize server ...
+2018-01-18 22:55:56,197 INFO  [Thread-0] root: Server listening on port: 8000
+2018-01-18 22:55:56,216 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 22:55:56,216 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 22:55:56,216 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 22:55:56,446 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 22:55:56,446 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 22:55:56,446 INFO  [main] root: Putting Jum with value: 3 into file kv.txt
+2018-01-18 22:55:56,447 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 22:55:56,476 INFO  [main] root: Key in storage: Hello with value: 1
+2018-01-18 22:55:56,476 INFO  [main] root: Key in cache: Hello with value: 1
+2018-01-18 22:55:56,476 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:55:56,482 INFO  [main] root: SIMPLE OVER WRITE TEST
+2018-01-18 22:55:56,482 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:55:56,482 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 22:55:56,482 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 22:55:56,482 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 22:55:56,520 INFO  [main] root: Put KV: HelloThere with value: 2
+2018-01-18 22:55:56,520 INFO  [main] root: Inserting into cache: HelloThere with value: 2
+2018-01-18 22:55:56,520 INFO  [main] root: Putting HelloThere with value: 2 into file kv.txt
+2018-01-18 22:55:56,521 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 22:55:56,542 INFO  [main] root: Put KV: Hello with value: 3
+2018-01-18 22:55:56,542 INFO  [main] root: Inserting into cache: Hello with value: 3
+2018-01-18 22:55:56,542 INFO  [main] root: Putting Hello with value: 3 into file kv.txt
+2018-01-18 22:55:56,543 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 22:55:56,543 INFO  [main] root: Read line in kv.txt'HelloThere 2 '
+2018-01-18 22:55:56,566 INFO  [main] root: Key in storage: Hello with value: 3
+2018-01-18 22:55:56,566 INFO  [main] root: Put KV: Hello with value: 
+2018-01-18 22:55:56,567 INFO  [main] root: Deleting key: Hello
+2018-01-18 22:55:56,567 INFO  [main] root: Putting Hello with value:  into file kv.txt
+2018-01-18 22:55:56,567 INFO  [main] root: Read line in kv.txt'Hello 3 '
+2018-01-18 22:55:56,567 INFO  [main] root: Clearing key: Hello from storage
+2018-01-18 22:55:56,567 INFO  [main] root: Read line in kv.txt'HelloThere 2 '
+2018-01-18 22:55:56,594 INFO  [main] root: SIMPLE FIFO CACHE TEST
+2018-01-18 22:55:56,594 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:55:56,601 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 22:55:56,601 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 22:55:56,601 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 22:55:56,638 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 22:55:56,638 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 22:55:56,638 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 22:55:56,638 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 22:55:56,639 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:55:56,679 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 22:55:56,679 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 22:55:56,679 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 22:55:56,679 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 22:55:56,680 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 22:55:56,680 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:55:56,681 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:55:56,708 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 22:55:56,708 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 22:55:56,708 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 22:55:56,708 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 22:55:56,708 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 22:55:56,709 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:55:56,709 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:55:56,709 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 22:55:56,735 INFO  [main] root: Put KV: A with value: 3
+2018-01-18 22:55:56,735 INFO  [main] root: Inserting into cache: A with value: 3
+2018-01-18 22:55:56,736 INFO  [main] root: Putting A with value: 3 into file kv.txt
+2018-01-18 22:55:56,736 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:55:56,737 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:55:56,737 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 22:55:56,765 INFO  [main] root: Key in cache: A with value: 3
+2018-01-18 22:55:56,765 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 22:55:56,765 INFO  [main] root: SIMPLE LRU CACHE TEST
+2018-01-18 22:55:56,765 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:55:56,771 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 22:55:56,771 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 22:55:56,771 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 22:55:56,805 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 22:55:56,805 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 22:55:56,805 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 22:55:56,806 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:55:56,831 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 22:55:56,831 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 22:55:56,831 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 22:55:56,832 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:55:56,832 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:55:56,860 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 22:55:56,861 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 22:55:56,861 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 22:55:56,862 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:55:56,862 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:55:56,883 INFO  [main] root: Key in cache: A with value: 2
+2018-01-18 22:55:56,884 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 22:55:56,884 INFO  [main] root: Put KV: A with value: 3
+2018-01-18 22:55:56,884 INFO  [main] root: Inserting into cache: A with value: 3
+2018-01-18 22:55:56,884 INFO  [main] root: Putting A with value: 3 into file kv.txt
+2018-01-18 22:55:56,885 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:55:56,885 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:55:56,885 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 22:55:56,903 INFO  [main] root: Key in cache: A with value: 3
+2018-01-18 22:55:56,903 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 22:59:47,604 INFO  [main] root: Beginning test suite
+2018-01-18 22:59:47,604 INFO  [main] root: SIMPLE READ WRITE TEST
+2018-01-18 22:59:47,604 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:59:47,604 INFO  [Thread-0] root: initialize server ...
+2018-01-18 22:59:47,606 INFO  [Thread-0] root: Server listening on port: 8000
+2018-01-18 22:59:47,613 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 22:59:47,614 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 22:59:47,614 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 22:59:47,876 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 22:59:47,876 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 22:59:47,876 INFO  [main] root: Putting Jum with value: 3 into file kv.txt
+2018-01-18 22:59:47,877 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 22:59:47,900 INFO  [main] root: Key in storage: Hello with value: 1
+2018-01-18 22:59:47,900 INFO  [main] root: Key in cache: Hello with value: 1
+2018-01-18 22:59:47,900 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:59:47,905 INFO  [main] root: SIMPLE OVER WRITE TEST
+2018-01-18 22:59:47,906 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:59:47,906 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 22:59:47,906 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 22:59:47,906 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 22:59:47,942 INFO  [main] root: Put KV: HelloThere with value: 2
+2018-01-18 22:59:47,942 INFO  [main] root: Inserting into cache: HelloThere with value: 2
+2018-01-18 22:59:47,942 INFO  [main] root: Putting HelloThere with value: 2 into file kv.txt
+2018-01-18 22:59:47,943 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 22:59:47,959 INFO  [main] root: Put KV: Hello with value: 3
+2018-01-18 22:59:47,960 INFO  [main] root: Inserting into cache: Hello with value: 3
+2018-01-18 22:59:47,960 INFO  [main] root: Putting Hello with value: 3 into file kv.txt
+2018-01-18 22:59:47,961 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 22:59:47,961 INFO  [main] root: Read line in kv.txt'HelloThere 2 '
+2018-01-18 22:59:47,980 INFO  [main] root: Key in storage: Hello with value: 3
+2018-01-18 22:59:47,981 INFO  [main] root: Put KV: Hello with value: 
+2018-01-18 22:59:47,981 INFO  [main] root: Deleting key: Hello
+2018-01-18 22:59:47,981 INFO  [main] root: Putting Hello with value:  into file kv.txt
+2018-01-18 22:59:47,981 INFO  [main] root: Read line in kv.txt'Hello 3 '
+2018-01-18 22:59:47,981 INFO  [main] root: Clearing key: Hello from storage
+2018-01-18 22:59:47,981 INFO  [main] root: Read line in kv.txt'HelloThere 2 '
+2018-01-18 22:59:48,008 INFO  [main] root: SIMPLE FIFO CACHE TEST
+2018-01-18 22:59:48,008 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:59:48,014 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 22:59:48,014 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 22:59:48,014 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 22:59:48,049 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 22:59:48,049 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 22:59:48,049 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 22:59:48,049 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 22:59:48,050 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:59:48,071 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 22:59:48,071 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 22:59:48,071 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 22:59:48,071 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 22:59:48,071 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 22:59:48,072 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:59:48,072 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:59:48,094 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 22:59:48,094 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 22:59:48,094 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 22:59:48,094 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 22:59:48,094 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 22:59:48,095 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:59:48,095 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:59:48,095 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 22:59:48,114 INFO  [main] root: Put KV: A with value: 3
+2018-01-18 22:59:48,114 INFO  [main] root: Inserting into cache: A with value: 3
+2018-01-18 22:59:48,114 INFO  [main] root: Putting A with value: 3 into file kv.txt
+2018-01-18 22:59:48,115 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:59:48,115 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:59:48,115 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 22:59:48,133 INFO  [main] root: Key in cache: A with value: 3
+2018-01-18 22:59:48,133 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 22:59:48,133 INFO  [main] root: SIMPLE LRU CACHE TEST
+2018-01-18 22:59:48,133 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:59:48,138 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 22:59:48,138 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 22:59:48,138 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 22:59:48,168 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 22:59:48,168 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 22:59:48,168 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 22:59:48,169 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:59:48,192 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 22:59:48,192 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 22:59:48,192 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 22:59:48,193 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:59:48,193 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:59:48,211 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 22:59:48,211 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 22:59:48,211 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 22:59:48,212 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:59:48,212 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:59:48,229 INFO  [main] root: Key in cache: A with value: 2
+2018-01-18 22:59:48,229 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 22:59:48,229 INFO  [main] root: Put KV: A with value: 3
+2018-01-18 22:59:48,229 INFO  [main] root: Inserting into cache: A with value: 3
+2018-01-18 22:59:48,229 INFO  [main] root: Putting A with value: 3 into file kv.txt
+2018-01-18 22:59:48,230 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:59:48,230 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:59:48,230 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 22:59:48,248 INFO  [main] root: Key in cache: A with value: 3
+2018-01-18 22:59:48,248 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 22:59:48,248 INFO  [main] root: SIMPLE LFU CACHE TEST
+2018-01-18 22:59:48,248 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 22:59:48,253 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 22:59:48,253 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 22:59:48,253 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 22:59:48,289 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 22:59:48,289 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 22:59:48,289 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 22:59:48,290 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 22:59:48,313 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 22:59:48,313 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 22:59:48,313 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 22:59:48,314 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:59:48,334 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 22:59:48,334 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 22:59:48,334 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 22:59:48,335 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:59:48,335 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:59:48,357 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 22:59:48,358 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 22:59:48,358 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 22:59:48,359 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:59:48,359 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:59:48,359 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 22:59:48,377 INFO  [main] root: Key in cache: A with value: 2
+2018-01-18 22:59:48,377 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 22:59:48,377 INFO  [main] root: Put KV: B with value: 3
+2018-01-18 22:59:48,378 INFO  [main] root: Inserting into cache: B with value: 3
+2018-01-18 22:59:48,378 INFO  [main] root: Putting B with value: 3 into file kv.txt
+2018-01-18 22:59:48,378 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:59:48,379 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 22:59:48,379 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 22:59:48,403 INFO  [main] root: Put KV: B with value: 3
+2018-01-18 22:59:48,403 INFO  [main] root: Inserting into cache: B with value: 3
+2018-01-18 22:59:48,403 INFO  [main] root: Putting B with value: 3 into file kv.txt
+2018-01-18 22:59:48,404 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:59:48,404 INFO  [main] root: Read line in kv.txt'B 3 '
+2018-01-18 22:59:48,404 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 22:59:48,427 INFO  [main] root: Put KV: C with value: 3
+2018-01-18 22:59:48,427 INFO  [main] root: Inserting into cache: C with value: 3
+2018-01-18 22:59:48,427 INFO  [main] root: Putting C with value: 3 into file kv.txt
+2018-01-18 22:59:48,428 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 22:59:48,428 INFO  [main] root: Read line in kv.txt'B 3 '
+2018-01-18 22:59:48,428 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 22:59:48,448 INFO  [main] root: Key in cache: A with value: 2
+2018-01-18 22:59:48,448 INFO  [main] root: Key in cache: B with value: 3
+2018-01-18 23:02:11,750 INFO  [main] root: Beginning test suite
+2018-01-18 23:02:11,751 INFO  [main] root: SIMPLE READ WRITE TEST
+2018-01-18 23:02:11,750 INFO  [Thread-0] root: initialize server ...
+2018-01-18 23:02:11,751 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:11,753 INFO  [Thread-0] root: Server listening on port: 8000
+2018-01-18 23:02:11,755 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 23:02:11,755 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 23:02:11,755 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 23:02:11,800 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 23:02:11,800 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 23:02:11,800 INFO  [main] root: Putting Jum with value: 3 into file kv.txt
+2018-01-18 23:02:11,801 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 23:02:11,823 INFO  [main] root: Key in storage: Hello with value: 1
+2018-01-18 23:02:11,823 INFO  [main] root: Key in cache: Hello with value: 1
+2018-01-18 23:02:11,824 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:11,829 INFO  [main] root: SIMPLE OVER WRITE TEST
+2018-01-18 23:02:11,829 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:11,829 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 23:02:11,829 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 23:02:11,829 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 23:02:11,861 INFO  [main] root: Put KV: HelloThere with value: 2
+2018-01-18 23:02:11,861 INFO  [main] root: Inserting into cache: HelloThere with value: 2
+2018-01-18 23:02:11,861 INFO  [main] root: Putting HelloThere with value: 2 into file kv.txt
+2018-01-18 23:02:11,862 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 23:02:11,880 INFO  [main] root: Put KV: Hello with value: 3
+2018-01-18 23:02:11,880 INFO  [main] root: Inserting into cache: Hello with value: 3
+2018-01-18 23:02:11,880 INFO  [main] root: Putting Hello with value: 3 into file kv.txt
+2018-01-18 23:02:11,881 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 23:02:11,881 INFO  [main] root: Read line in kv.txt'HelloThere 2 '
+2018-01-18 23:02:11,905 INFO  [main] root: Key in storage: Hello with value: 3
+2018-01-18 23:02:11,906 INFO  [main] root: Put KV: Hello with value: 
+2018-01-18 23:02:11,906 INFO  [main] root: Deleting key: Hello
+2018-01-18 23:02:11,906 INFO  [main] root: Putting Hello with value:  into file kv.txt
+2018-01-18 23:02:11,907 INFO  [main] root: Read line in kv.txt'Hello 3 '
+2018-01-18 23:02:11,907 INFO  [main] root: Clearing key: Hello from storage
+2018-01-18 23:02:11,907 INFO  [main] root: Read line in kv.txt'HelloThere 2 '
+2018-01-18 23:02:11,926 INFO  [main] root: SIMPLE FIFO CACHE TEST
+2018-01-18 23:02:11,926 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:11,931 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 23:02:11,931 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 23:02:11,931 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 23:02:11,966 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 23:02:11,966 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 23:02:11,966 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 23:02:11,966 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 23:02:11,967 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:11,989 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 23:02:11,989 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 23:02:11,989 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 23:02:11,989 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 23:02:11,989 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 23:02:11,990 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:11,990 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:12,014 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 23:02:12,014 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 23:02:12,014 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 23:02:12,014 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 23:02:12,014 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 23:02:12,015 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:12,015 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:12,015 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:12,031 INFO  [main] root: Put KV: A with value: 3
+2018-01-18 23:02:12,031 INFO  [main] root: Inserting into cache: A with value: 3
+2018-01-18 23:02:12,031 INFO  [main] root: Putting A with value: 3 into file kv.txt
+2018-01-18 23:02:12,032 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:12,032 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:12,032 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:12,052 INFO  [main] root: Key in cache: A with value: 3
+2018-01-18 23:02:12,052 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 23:02:12,052 INFO  [main] root: SIMPLE LRU CACHE TEST
+2018-01-18 23:02:12,052 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:12,055 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 23:02:12,055 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 23:02:12,055 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 23:02:12,092 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 23:02:12,092 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 23:02:12,092 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 23:02:12,093 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:12,109 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 23:02:12,109 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 23:02:12,109 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 23:02:12,110 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:12,110 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:12,133 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 23:02:12,133 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 23:02:12,133 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 23:02:12,134 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:12,135 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:12,158 INFO  [main] root: Key in cache: A with value: 2
+2018-01-18 23:02:12,158 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 23:02:12,158 INFO  [main] root: Put KV: A with value: 3
+2018-01-18 23:02:12,158 INFO  [main] root: Inserting into cache: A with value: 3
+2018-01-18 23:02:12,158 INFO  [main] root: Putting A with value: 3 into file kv.txt
+2018-01-18 23:02:12,159 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:12,159 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:12,159 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:12,182 INFO  [main] root: Key in cache: A with value: 3
+2018-01-18 23:02:12,182 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 23:02:12,182 INFO  [main] root: SIMPLE LFU CACHE TEST
+2018-01-18 23:02:12,182 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:12,189 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 23:02:12,189 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 23:02:12,189 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 23:02:12,225 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 23:02:12,225 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 23:02:12,225 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 23:02:12,226 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:12,248 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 23:02:12,248 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 23:02:12,248 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 23:02:12,249 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:12,272 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 23:02:12,272 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 23:02:12,272 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 23:02:12,273 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:12,273 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:12,295 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 23:02:12,295 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 23:02:12,295 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 23:02:12,296 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:12,296 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:12,296 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:12,317 INFO  [main] root: Key in cache: A with value: 2
+2018-01-18 23:02:12,317 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 23:02:12,318 INFO  [main] root: Put KV: B with value: 3
+2018-01-18 23:02:12,318 INFO  [main] root: Inserting into cache: B with value: 3
+2018-01-18 23:02:12,318 INFO  [main] root: Putting B with value: 3 into file kv.txt
+2018-01-18 23:02:12,318 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:12,319 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:12,319 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:12,339 INFO  [main] root: Put KV: B with value: 3
+2018-01-18 23:02:12,340 INFO  [main] root: Inserting into cache: B with value: 3
+2018-01-18 23:02:12,340 INFO  [main] root: Putting B with value: 3 into file kv.txt
+2018-01-18 23:02:12,340 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:12,340 INFO  [main] root: Read line in kv.txt'B 3 '
+2018-01-18 23:02:12,341 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:12,362 INFO  [main] root: Put KV: C with value: 3
+2018-01-18 23:02:12,362 INFO  [main] root: Inserting into cache: C with value: 3
+2018-01-18 23:02:12,362 INFO  [main] root: Putting C with value: 3 into file kv.txt
+2018-01-18 23:02:12,363 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:12,363 INFO  [main] root: Read line in kv.txt'B 3 '
+2018-01-18 23:02:12,363 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:12,385 INFO  [main] root: Key in cache: B with value: 3
+2018-01-18 23:02:12,385 INFO  [main] root: Key in cache: C with value: 3
+2018-01-18 23:02:55,126 INFO  [main] root: Beginning test suite
+2018-01-18 23:02:55,127 INFO  [main] root: SIMPLE READ WRITE TEST
+2018-01-18 23:02:55,126 INFO  [Thread-0] root: initialize server ...
+2018-01-18 23:02:55,127 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:55,129 INFO  [Thread-0] root: Server listening on port: 8000
+2018-01-18 23:02:55,201 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 23:02:55,201 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 23:02:55,202 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 23:02:55,459 INFO  [main] root: Put KV: Jum with value: 3
+2018-01-18 23:02:55,459 INFO  [main] root: Inserting into cache: Jum with value: 3
+2018-01-18 23:02:55,459 INFO  [main] root: Putting Jum with value: 3 into file kv.txt
+2018-01-18 23:02:55,460 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 23:02:55,485 INFO  [main] root: Key in storage: Hello with value: 1
+2018-01-18 23:02:55,486 INFO  [main] root: Key in cache: Hello with value: 1
+2018-01-18 23:02:55,486 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:55,492 INFO  [main] root: SIMPLE OVER WRITE TEST
+2018-01-18 23:02:55,492 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:55,492 INFO  [main] root: Put KV: Hello with value: 1
+2018-01-18 23:02:55,492 INFO  [main] root: Inserting into cache: Hello with value: 1
+2018-01-18 23:02:55,492 INFO  [main] root: Putting Hello with value: 1 into file kv.txt
+2018-01-18 23:02:55,523 INFO  [main] root: Put KV: HelloThere with value: 2
+2018-01-18 23:02:55,523 INFO  [main] root: Inserting into cache: HelloThere with value: 2
+2018-01-18 23:02:55,523 INFO  [main] root: Putting HelloThere with value: 2 into file kv.txt
+2018-01-18 23:02:55,524 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 23:02:55,546 INFO  [main] root: Put KV: Hello with value: 3
+2018-01-18 23:02:55,546 INFO  [main] root: Inserting into cache: Hello with value: 3
+2018-01-18 23:02:55,546 INFO  [main] root: Putting Hello with value: 3 into file kv.txt
+2018-01-18 23:02:55,547 INFO  [main] root: Read line in kv.txt'Hello 1 '
+2018-01-18 23:02:55,547 INFO  [main] root: Read line in kv.txt'HelloThere 2 '
+2018-01-18 23:02:55,569 INFO  [main] root: Key in storage: Hello with value: 3
+2018-01-18 23:02:55,570 INFO  [main] root: Put KV: Hello with value: 
+2018-01-18 23:02:55,570 INFO  [main] root: Deleting key: Hello
+2018-01-18 23:02:55,570 INFO  [main] root: Putting Hello with value:  into file kv.txt
+2018-01-18 23:02:55,570 INFO  [main] root: Read line in kv.txt'Hello 3 '
+2018-01-18 23:02:55,571 INFO  [main] root: Clearing key: Hello from storage
+2018-01-18 23:02:55,571 INFO  [main] root: Read line in kv.txt'HelloThere 2 '
+2018-01-18 23:02:55,589 INFO  [main] root: SIMPLE FIFO CACHE TEST
+2018-01-18 23:02:55,589 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:55,595 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 23:02:55,595 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 23:02:55,595 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 23:02:55,625 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 23:02:55,625 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 23:02:55,625 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 23:02:55,625 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 23:02:55,626 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:55,647 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 23:02:55,647 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 23:02:55,647 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 23:02:55,647 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 23:02:55,647 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 23:02:55,648 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:55,648 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:55,666 INFO  [main] root: Key in cache: A with value: 1
+2018-01-18 23:02:55,667 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 23:02:55,667 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 23:02:55,667 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 23:02:55,667 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 23:02:55,667 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:55,668 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:55,668 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:55,686 INFO  [main] root: Put KV: A with value: 3
+2018-01-18 23:02:55,686 INFO  [main] root: Inserting into cache: A with value: 3
+2018-01-18 23:02:55,686 INFO  [main] root: Putting A with value: 3 into file kv.txt
+2018-01-18 23:02:55,687 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:55,687 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:55,687 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:55,711 INFO  [main] root: Key in cache: A with value: 3
+2018-01-18 23:02:55,711 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 23:02:55,711 INFO  [main] root: SIMPLE LRU CACHE TEST
+2018-01-18 23:02:55,711 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:55,716 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 23:02:55,716 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 23:02:55,716 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 23:02:55,750 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 23:02:55,750 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 23:02:55,750 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 23:02:55,751 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:55,775 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 23:02:55,775 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 23:02:55,775 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 23:02:55,776 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:55,776 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:55,797 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 23:02:55,797 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 23:02:55,797 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 23:02:55,798 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:55,798 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:55,821 INFO  [main] root: Key in cache: A with value: 2
+2018-01-18 23:02:55,821 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 23:02:55,821 INFO  [main] root: Put KV: A with value: 3
+2018-01-18 23:02:55,822 INFO  [main] root: Inserting into cache: A with value: 3
+2018-01-18 23:02:55,822 INFO  [main] root: Putting A with value: 3 into file kv.txt
+2018-01-18 23:02:55,822 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:55,823 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:55,823 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:55,847 INFO  [main] root: Key in cache: A with value: 3
+2018-01-18 23:02:55,847 INFO  [main] root: Key in cache: C with value: 1
+2018-01-18 23:02:55,847 INFO  [main] root: SIMPLE LFU CACHE TEST
+2018-01-18 23:02:55,847 INFO  [main] root: CLEAR CACHE AND STORAGE
+2018-01-18 23:02:55,854 INFO  [main] root: Put KV: A with value: 1
+2018-01-18 23:02:55,854 INFO  [main] root: Inserting into cache: A with value: 1
+2018-01-18 23:02:55,854 INFO  [main] root: Putting A with value: 1 into file kv.txt
+2018-01-18 23:02:55,967 INFO  [main] root: Put KV: A with value: 2
+2018-01-18 23:02:55,967 INFO  [main] root: Inserting into cache: A with value: 2
+2018-01-18 23:02:55,967 INFO  [main] root: Putting A with value: 2 into file kv.txt
+2018-01-18 23:02:55,968 INFO  [main] root: Read line in kv.txt'A 1 '
+2018-01-18 23:02:56,013 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 23:02:56,013 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 23:02:56,013 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 23:02:56,014 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:56,079 INFO  [main] root: Put KV: C with value: 1
+2018-01-18 23:02:56,080 INFO  [main] root: Inserting into cache: C with value: 1
+2018-01-18 23:02:56,080 INFO  [main] root: Putting C with value: 1 into file kv.txt
+2018-01-18 23:02:56,080 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:56,081 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:56,119 INFO  [main] root: Put KV: B with value: 1
+2018-01-18 23:02:56,119 INFO  [main] root: Inserting into cache: B with value: 1
+2018-01-18 23:02:56,119 INFO  [main] root: Putting B with value: 1 into file kv.txt
+2018-01-18 23:02:56,120 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:56,120 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:56,120 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:56,151 INFO  [main] root: Key in cache: A with value: 2
+2018-01-18 23:02:56,151 INFO  [main] root: Key in cache: B with value: 1
+2018-01-18 23:02:56,151 INFO  [main] root: Put KV: B with value: 3
+2018-01-18 23:02:56,152 INFO  [main] root: Inserting into cache: B with value: 3
+2018-01-18 23:02:56,152 INFO  [main] root: Putting B with value: 3 into file kv.txt
+2018-01-18 23:02:56,152 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:56,153 INFO  [main] root: Read line in kv.txt'B 1 '
+2018-01-18 23:02:56,153 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:56,176 INFO  [main] root: Put KV: B with value: 3
+2018-01-18 23:02:56,176 INFO  [main] root: Inserting into cache: B with value: 3
+2018-01-18 23:02:56,176 INFO  [main] root: Putting B with value: 3 into file kv.txt
+2018-01-18 23:02:56,176 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:56,176 INFO  [main] root: Read line in kv.txt'B 3 '
+2018-01-18 23:02:56,177 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:56,198 INFO  [main] root: Put KV: B with value: 3
+2018-01-18 23:02:56,198 INFO  [main] root: Inserting into cache: B with value: 3
+2018-01-18 23:02:56,198 INFO  [main] root: Putting B with value: 3 into file kv.txt
+2018-01-18 23:02:56,199 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:56,199 INFO  [main] root: Read line in kv.txt'B 3 '
+2018-01-18 23:02:56,199 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:56,220 INFO  [main] root: Put KV: A with value: 3
+2018-01-18 23:02:56,220 INFO  [main] root: Inserting into cache: A with value: 3
+2018-01-18 23:02:56,220 INFO  [main] root: Putting A with value: 3 into file kv.txt
+2018-01-18 23:02:56,221 INFO  [main] root: Read line in kv.txt'A 2 '
+2018-01-18 23:02:56,221 INFO  [main] root: Read line in kv.txt'B 3 '
+2018-01-18 23:02:56,221 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:56,245 INFO  [main] root: Put KV: C with value: 3
+2018-01-18 23:02:56,245 INFO  [main] root: Inserting into cache: C with value: 3
+2018-01-18 23:02:56,245 INFO  [main] root: Putting C with value: 3 into file kv.txt
+2018-01-18 23:02:56,246 INFO  [main] root: Read line in kv.txt'A 3 '
+2018-01-18 23:02:56,246 INFO  [main] root: Read line in kv.txt'B 3 '
+2018-01-18 23:02:56,246 INFO  [main] root: Read line in kv.txt'C 1 '
+2018-01-18 23:02:56,268 INFO  [main] root: Key in cache: B with value: 3
+2018-01-18 23:02:56,269 INFO  [main] root: Key in cache: C with value: 3

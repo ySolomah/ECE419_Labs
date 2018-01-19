@@ -356,6 +356,7 @@ public class KVServer extends Thread implements IKVServer {
                 simpleOverWrite(ourServer);
                 simpleFifoCacheTest(ourServer);
                 simpleLruCacheTest(ourServer);
+                simpleLfuCacheTest(ourServer);
                 /* END TEST SUITE */
             }
         } catch (IOException e) {
@@ -457,6 +458,34 @@ public class KVServer extends Thread implements IKVServer {
             e.printStackTrace();
         }
     }
+
+
+    public static void simpleLfuCacheTest(KVServer ctx) {
+        logger.info("SIMPLE LFU CACHE TEST");
+        clearCacheAndStorage(ctx);
+        try {
+            ctx.putKV("A", "1");
+            ctx.putKV("A", "2");
+            ctx.putKV("B", "1");
+            ctx.putKV("C", "1");
+            ctx.putKV("B", "1");
+            ctx.inCache("A");
+            ctx.inCache("B");
+            ctx.inCache("C");
+            ctx.putKV("B", "3");
+            ctx.putKV("B", "3");
+            ctx.putKV("B", "3");
+            ctx.putKV("A", "3");
+            ctx.putKV("C", "3");
+            ctx.inCache("A");
+            ctx.inCache("B");
+            ctx.inCache("C");
+        } catch (Exception e) {
+            logger.error("fifo test fail");
+            e.printStackTrace();
+        }
+    }
+
 
 }
 

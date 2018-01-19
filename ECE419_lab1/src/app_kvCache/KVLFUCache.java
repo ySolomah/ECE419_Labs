@@ -55,11 +55,7 @@ public class KVLFUCache implements IKVCache {
                 return;
             }
         }
-        
-        CacheNode node = new CacheNode(key, value, 1);
-        policyOrder.push(node);
-        cache.put(key, value);
-        while(policyOrder.size() > cacheSize) {
+         while(policyOrder.size() >= cacheSize) {
             int min = Integer.MAX_VALUE;
             CacheNode candidate = null;
             for (CacheNode nodeToRemove : policyOrder) {
@@ -70,6 +66,10 @@ public class KVLFUCache implements IKVCache {
             }
             Delete(candidate.key);
         }
+        
+        CacheNode node = new CacheNode(key, value, 1);
+        policyOrder.push(node);
+        cache.put(key, value);
         return;
     }
 }
