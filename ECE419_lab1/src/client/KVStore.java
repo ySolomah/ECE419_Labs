@@ -62,12 +62,10 @@ public class KVStore implements KVCommInterface {
    
     private KVMessage sendRequestAndReponse(KVClientServerMessage to_send) throws Exception {
         // send the request
-        byte[] msg = to_send.toBytes();
         if (to_send != null) {
-            _output.write(msg);
-            _output.flush();
+            KVClientServerMessage.sendMessage(to_send, _output);
         } else {
-            logger.error("Could not serialize KVMessage: " + msg);
+            logger.error("Could not serialize KVMessage: " + to_send);
             throw new IOException("Could not serialize KVMessage");
         }
 

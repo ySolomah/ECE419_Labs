@@ -1,3 +1,3 @@
-A 3 
-B 3 
-C 3 
+foo bar 
+updateTestValue updated 
+foo2 bar2 

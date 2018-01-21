@@ -170,7 +170,7 @@ public class KVServer extends Thread implements IKVServer {
             String key,
             String value
             ) {
-        if(value.equals("") || value.isEmpty()) {
+        if(value.equals("") || value.isEmpty() || value.equals("null")) {
             logger.info("Deleting key: " + key);
             kvCache.Delete(key);
         } else {
@@ -207,7 +207,7 @@ public class KVServer extends Thread implements IKVServer {
                 String[] keyValue = line.split(" ");
                 if(!foundKey && keyValue[0].equals(key)) {
                     foundKey = true;
-                    if(value.equals("") || value == null || value.isEmpty()) {
+                    if(value.equals("") || value == null || value.isEmpty() || value.equals("null")) {
                         logger.info("Clearing key: " + key + " from storage");
                         continue;
                     } else {
@@ -349,7 +349,7 @@ public class KVServer extends Thread implements IKVServer {
                 String strategy = args[2];
                 KVServer ourServer = new KVServer(port, cacheSize, strategy);
                 ourServer.start();
-                /* TEST SUITE */
+                /* TEST SUITE 
                 logger.info("Beginning test suite");
                 simpleReadWrite(ourServer);
                 clearCacheAndStorage(ourServer);

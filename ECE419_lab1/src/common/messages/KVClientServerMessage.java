@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -57,18 +59,20 @@ public class KVClientServerMessage implements KVMessage, Serializable {
         return status;
     }
 
-    private byte[] int_to_bytes(int i) {
-        byte[] to_ret =  ByteBuffer.allocate(4).putInt(i).array();
-        logger.debug("Convert " + String.valueOf(i) + " to " +
-                    String.valueOf(to_ret[3]) + ", " +
-                    String.valueOf(to_ret[2]) + ", " +
-                    String.valueOf(to_ret[1]) + ", " +
-                    String.valueOf(to_ret[0]));
-                    
-        return to_ret;
+    private byte[] int_to_bytes(int j) {
+        byte[] bytes =  ByteBuffer.allocate(4).putInt(j).array();
+        logger.debug("Bytes are:");
+        for(int i = 0; i < bytes.length; ++i) {
+            logger.debug(String.format("%02X", bytes[i]));
+        }
+        return bytes;
     }
 
     private static int from_byte_array(byte[] bytes) {
+        logger.debug("Bytes are:");
+        for(int i = 0; i < bytes.length; ++i) {
+            logger.debug(String.format("%02X", bytes[i]));
+        }
         return ByteBuffer.wrap(bytes).getInt();
     }
 
@@ -110,41 +114,19 @@ public class KVClientServerMessage implements KVMessage, Serializable {
         return to_return;
     }
 
-    public static KVMessage receiveMessage(InputStream _input) throws IOException{
-        int BUFFER_SIZE = 1024;
-        int index = 0;
-        byte[] msgBytes = new byte[0];
-        byte[] bufferBytes = new byte[BUFFER_SIZE]; 
+    public static void sendMessage(KVMessage k, OutputStream _output) throws IOException {
+        logger.info("Sending a message");
+        ObjectOutputStream s = new ObjectOutputStream(_output);
+        s.writeObject(k);
+        s.flush();
+        logger.info("Sent successfully");
+    }
 
-        logger.info("Receiving a message - will read size first");
-        // first 4 bytes will be the length of the message
-        byte read = (byte) _input.read();
-        byte[] temp = new byte[4];
-        int size = 0x0000;
-        for(int i = 0; i < 4; ++i) {
-            temp[i] = read;
-            read = (byte) _input.read();
-        }
-        size = from_byte_array(temp);
-        // TODO Logger for size
-        logger.info("Size is: " + String.valueOf(size));
-        
-        // get the bytes now
-        for(int i = 0; i < size; ++i) {
-            if(index == BUFFER_SIZE) {
-                // expand and copy
-                msgBytes = move_buffers(msgBytes, bufferBytes, BUFFER_SIZE);
-                index = 0;
-            }
-            bufferBytes[index] = read;
-            read = (byte) _input.read();
-            index++;
-        }
-
-        // copy the rest to the message
-        msgBytes = move_buffers(msgBytes, bufferBytes, index);
-        KVMessage k = deserialize(msgBytes);
-        logger.info("Successfully received message");
+    public static KVMessage receiveMessage(InputStream _input) throws IOException, ClassNotFoundException {
+        logger.info("Receiving a message");
+        ObjectInputStream s = new ObjectInputStream(_input);
+        KVMessage k = (KVMessage) ((KVClientServerMessage) s.readObject());
+        logger.info("Successfully received message of type: " + k.getStatus().name());
 
         return k;  
     }
@@ -158,7 +140,7 @@ public class KVClientServerMessage implements KVMessage, Serializable {
             o = (KVClientServerMessage) in.readObject();
             logger.info("Deserialized message successfully");
         } catch(IOException e) {
-            logger.error("Failed to deserialize: " + e.getCause().getMessage());
+            logger.error("Failed to deserialize: ObjectInputStream threw IOException");
         }
         catch(ClassNotFoundException e) {
             logger.error("Failed to find the class 'KVClientServerMessage'");
@@ -170,7 +152,7 @@ public class KVClientServerMessage implements KVMessage, Serializable {
                 }
                 logger.info("Successfully closed input stream");
             } catch (IOException ex) {
-                logger.error("Failed to close input stream: " + ex.getCause().getMessage());
+                logger.error("Failed to close input stream");
             }
         }
         return o;

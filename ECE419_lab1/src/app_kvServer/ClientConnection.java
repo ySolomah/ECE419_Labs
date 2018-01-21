@@ -51,27 +51,25 @@ public class ClientConnection implements Runnable {
 			while(isOpen) {
 				try {
 					KVMessage latestMsg = KVClientServerMessage.receiveMessage(input);
+                    if(latestMsg == null) {
+                        throw new IOException("Could not receive a message!");
+                    }
 
                     KVClientServerMessage reply = handleMessage(latestMsg);
                     if (reply == null) {
                         throw new IOException("Invalid state sent to server over client");
-                    }
-
-                    // send the reply
-                    byte[] msg = reply.toBytes(); 
-                    if (msg != null) {
-                        output.write(msg);
-                        output.flush();
                     } else {
-                        throw new IOException("Could not serialize KVMessage");
+                        KVClientServerMessage.sendMessage(reply, output); 
                     }
-					
 				/* connection either terminated by the client or lost due to 
 				 * network problems*/	
 				} catch (IOException ioe) {
 					logger.error("Error! Connection lost!");
 					isOpen = false;
-				}				
+				}  catch (ClassNotFoundException e) {
+                    logger.error("Error! Class not found!");
+                    isOpen = false;
+                }			
 			}
 			
 		} catch (IOException ioe) {
@@ -102,7 +100,7 @@ public class ClientConnection implements Runnable {
             success_mode = KVMessage.StatusType.GET_SUCCESS; 
         } else if (k.getStatus() == KVMessage.StatusType.PUT) {
             // check if delete
-            if (k.getValue() == null) {
+            if (k.getValue().equals("null")) {
                failure_mode = KVMessage.StatusType.DELETE_ERROR;
                success_mode = KVMessage.StatusType.DELETE_SUCCESS;
             } else {
