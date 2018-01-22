@@ -20,37 +20,37 @@ import org.apache.log4j.*;
  */
 public class ClientConnection implements Runnable {
 
-	private static Logger logger = Logger.getRootLogger();
-	
-	private boolean isOpen;
-	
-	private Socket clientSocket;
-	private InputStream input;
-	private OutputStream output;
+    private static Logger logger = Logger.getRootLogger();
+    
+    private boolean isOpen;
+    
+    private Socket clientSocket;
+    private InputStream input;
+    private OutputStream output;
     private KVServer server;
-	
-	/**
-	 * Constructs a new CientConnection object for a given TCP socket.
-	 * @param clientSocket the Socket object for the client connection.
-	 */
-	public ClientConnection(Socket clientSocket, KVServer server) {
-		this.clientSocket = clientSocket;
-		this.isOpen = true;
+    
+    /**
+     * Constructs a new CientConnection object for a given TCP socket.
+     * @param clientSocket the Socket object for the client connection.
+     */
+    public ClientConnection(Socket clientSocket, KVServer server) {
+        this.clientSocket = clientSocket;
+        this.isOpen = true;
         this.server = server;
-	}
-	
-	/**
-	 * Initializes and starts the client connection. 
-	 * Loops until the connection is closed or aborted by the client.
-	 */
-	public void run() {
-		try {
-			output = clientSocket.getOutputStream();
-			input = clientSocket.getInputStream();
-		
-			while(isOpen) {
-				try {
-					KVMessage latestMsg = KVClientServerMessage.receiveMessage(input);
+    }
+    
+    /**
+     * Initializes and starts the client connection. 
+     * Loops until the connection is closed or aborted by the client.
+     */
+    public void run() {
+        try {
+            output = clientSocket.getOutputStream();
+            input = clientSocket.getInputStream();
+        
+            while(isOpen) {
+                try {
+                    KVMessage latestMsg = KVClientServerMessage.receiveMessage(input);
                     if(latestMsg == null) {
                         throw new IOException("Could not receive a message!");
                     }
@@ -61,50 +61,44 @@ public class ClientConnection implements Runnable {
                     } else {
                         KVClientServerMessage.sendMessage(reply, output); 
                     }
-				/* connection either terminated by the client or lost due to 
-				 * network problems*/	
-				} catch (IOException ioe) {
-					logger.error("Error! Connection lost!");
-					isOpen = false;
-				}  catch (ClassNotFoundException e) {
+                /* connection either terminated by the client or lost due to 
+                 * network problems*/    
+                } catch (IOException ioe) {
+                    logger.error("Error! Connection lost!");
+                    isOpen = false;
+                }  catch (ClassNotFoundException e) {
                     logger.error("Error! Class not found!");
                     isOpen = false;
-                }			
-			}
-			
-		} catch (IOException ioe) {
-			logger.error("Error! Connection could not be established!", ioe);
-			
-		} finally {
-			
-			try {
-				if (clientSocket != null) {
-					input.close();
-					output.close();
-					clientSocket.close();
-				}
-			} catch (IOException ioe) {
-				logger.error("Error! Unable to tear down connection!", ioe);
-			}
-		}
-	}
+                }            
+            }
+            
+        } catch (IOException ioe) {
+            logger.error("Error! Connection could not be established!", ioe);
+            
+        } finally {
+            
+            try {
+                if (clientSocket != null) {
+                    input.close();
+                    output.close();
+                    clientSocket.close();
+                }
+            } catch (IOException ioe) {
+                logger.error("Error! Unable to tear down connection!", ioe);
+            }
+        }
+    }
 
-    private KVClientServerMessage handleMessage(KVMessage k) {
-        KVMessage.StatusType failure_mode = KVMessage.StatusType.GET_ERROR;
+    private KVMessage.StatusType success_mode(KVMessage k) throws Exception{
         KVMessage.StatusType success_mode = KVMessage.StatusType.GET_SUCCESS;
-        KVClientServerMessage reply = null;
-
-        // determine failure status
+        
         if (k.getStatus() == KVMessage.StatusType.GET) {
-            failure_mode = KVMessage.StatusType.GET_ERROR;
             success_mode = KVMessage.StatusType.GET_SUCCESS; 
         } else if (k.getStatus() == KVMessage.StatusType.PUT) {
             // check if delete
             if (k.getValue().equals("null")) {
-               failure_mode = KVMessage.StatusType.DELETE_ERROR;
                success_mode = KVMessage.StatusType.DELETE_SUCCESS;
             } else {
-                failure_mode = KVMessage.StatusType.PUT_ERROR;
                 // assume put update - key already exists
                 success_mode = KVMessage.StatusType.PUT_UPDATE;
                 // see if key already exists
@@ -116,20 +110,51 @@ public class ClientConnection implements Runnable {
                 }
             }
         } else {
-            return null; // shit hit the fan
+            throw new Exception("Invalid request type"); // shit hit the fan
+        }
+        return success_mode;
+    }
+
+    private KVMessage.StatusType failure_mode(KVMessage k) throws Exception{
+        KVMessage.StatusType failure_mode = KVMessage.StatusType.GET_ERROR;
+        // determine failure status
+        if (k.getStatus() == KVMessage.StatusType.GET) {
+            failure_mode = KVMessage.StatusType.GET_ERROR;
+        } else if (k.getStatus() == KVMessage.StatusType.PUT) {
+            // check if delete
+            if (k.getValue().equals("null")) {
+               failure_mode = KVMessage.StatusType.DELETE_ERROR;
+            } else {
+                failure_mode = KVMessage.StatusType.PUT_ERROR;
+            }
+        } else {
+            throw new Exception("Invalid request type"); // shit hit the fan
+        }
+        return failure_mode;
+    }
+
+    private KVClientServerMessage handleMessage(KVMessage k) {
+        KVClientServerMessage reply = null;
+        KVMessage.StatusType success_m, failure_m;
+        try {
+            success_m = success_mode(k);
+            failure_m = failure_mode(k);
+        } catch (Exception e) {
+            logger.error("Invalid request type - was not PUT or GET");
+            return null;
         }
         try {
             if (k.getStatus() == KVMessage.StatusType.GET){
                 String result = server.getKV(k.getKey());
-                reply = new KVClientServerMessage(success_mode, k.getKey(), result);
+                reply = new KVClientServerMessage(success_m, k.getKey(), result);
             }
             else if (k.getStatus() == KVMessage.StatusType.PUT) {
                 // could be a delete, update, or put
                 server.putKV(k.getKey(), k.getValue());
-                reply = new KVClientServerMessage(success_mode, k.getKey(), k.getValue()); 
+                reply = new KVClientServerMessage(success_m, k.getKey(), k.getValue()); 
             }
         } catch (Exception e) {
-            reply = new KVClientServerMessage(failure_mode, k.getKey(), k.getValue());
+            reply = new KVClientServerMessage(failure_m, k.getKey(), k.getValue());
         }
         return reply;
     }

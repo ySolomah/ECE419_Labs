@@ -44,19 +44,19 @@ public class KVServer extends Thread implements IKVServer {
     private static Logger logger = Logger.getRootLogger();
     private static String fileName = "kv.txt";
 
-	/**
-	 * Start KV Server at given port
-	 * @param port given port for storage server to operate
-	 * @param cacheSize specifies how many key-value pairs the server is allowed
-	 *           to keep in-memory
-	 * @param strategy specifies the cache replacement strategy in case the cache
-	 *           is full and there is a GET- or PUT-request on a key that is
-	 *           currently not contained in the cache. Options are "FIFO", "LRU",
-	 *           and "LFU".
-	 */
-	public KVServer(int port, int cacheSize, String strategy) {
+    /**
+     * Start KV Server at given port
+     * @param port given port for storage server to operate
+     * @param cacheSize specifies how many key-value pairs the server is allowed
+     *           to keep in-memory
+     * @param strategy specifies the cache replacement strategy in case the cache
+     *           is full and there is a GET- or PUT-request on a key that is
+     *           currently not contained in the cache. Options are "FIFO", "LRU",
+     *           and "LFU".
+     */
+    public KVServer(int port, int cacheSize, String strategy) {
         this.clientThreads = new ArrayList<Thread>();
-		this.port = port;
+        this.port = port;
         this.cacheSize = cacheSize;
         this.strategy = strategy;
         if(strategy.equals("LRU")) {
@@ -72,54 +72,54 @@ public class KVServer extends Thread implements IKVServer {
             cacheStrategy = CacheStrategy.FIFO;
             kvCache = new KVFIFOCache(cacheSize ,logger);
         }
-	}
+    }
 
-	@Override
-	public int getPort(){
-		return this.port;
-	}
+    @Override
+    public int getPort(){
+        return this.port;
+    }
 
-	@Override
+    @Override
     public String getHostname(){
-		return serverSocket.getInetAddress().getCanonicalHostName();
-	}
+        return serverSocket.getInetAddress().getCanonicalHostName();
+    }
 
-	@Override
+    @Override
     public CacheStrategy getCacheStrategy(){
-		return this.cacheStrategy;
-	}
+        return this.cacheStrategy;
+    }
 
-	@Override
+    @Override
     public int getCacheSize(){
-		return this.cacheSize;
-	}
+        return this.cacheSize;
+    }
 
     private boolean isRunning() {
         return this.running;
     }
 
-	@Override
+    @Override
     public boolean inStorage(String key){
-		String inStoreString = searchStorage(key);
+        String inStoreString = searchStorage(key);
         if(inStoreString != null) {
             logger.info("Key in storage: " + key + " with value: " + inStoreString);
             return (true);
         } else {
-		    return (false);
+            return (false);
         }
-	}
+    }
 
-	@Override
+    @Override
     public boolean inCache(String key){
         String ret = kvCache.Get(key);
-		if(ret != null && !ret.isEmpty()) {
+        if(ret != null && !ret.isEmpty()) {
             logger.info("Key in cache: " + key + " with value: " + ret);
             return(true);
         }
         return(false);
-	}
+    }
 
-	@Override
+    @Override
     public String getKV(String key) throws Exception{
         String myString = null;
         myString = kvCache.Get(key);
@@ -131,8 +131,8 @@ public class KVServer extends Thread implements IKVServer {
                 return(myString);
             }
         }
-		throw new Exception("Failed to find key: " + key);
-	}
+        throw new Exception("Failed to find key: " + key);
+    }
 
     public String searchStorage(String key) {
         try {
@@ -152,7 +152,7 @@ public class KVServer extends Thread implements IKVServer {
         return(null);
     }
 
-	@Override
+    @Override
     public synchronized void putKV(final String key,final String value) throws Exception {
         logger.info("Put KV: " + key + " with value: " + value);
         Thread cacheThread = new Thread() {
@@ -164,7 +164,7 @@ public class KVServer extends Thread implements IKVServer {
         putKVSyn(key, value);
         cacheThread.join();
         return;
-	}
+    }
 
     private void putCache(
             String key,
@@ -262,25 +262,25 @@ public class KVServer extends Thread implements IKVServer {
     }
 
 
-	@Override
+    @Override
     public void clearCache(){
         kvCache.Clear();
         return;
-	}
+    }
 
-	@Override
+    @Override
     public void clearStorage(){
         File file = new File(fileName);
         file.delete();
-	}
+    }
 
-	@Override
+    @Override
     public void kill() {
         logger.error("Killing Server");
         System.exit(2);
-	}
+    }
 
-	@Override
+    @Override
     public void close(){
         running = false;
         try {
@@ -296,7 +296,7 @@ public class KVServer extends Thread implements IKVServer {
             }
         }
         return;
-	}
+    }
 
     public boolean initializeServer() {
      logger.info("initialize server ...");

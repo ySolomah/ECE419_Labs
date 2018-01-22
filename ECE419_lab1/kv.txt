@@ -1,3 +1,0 @@
-foo bar 
-updateTestValue updated 
-foo2 bar2 

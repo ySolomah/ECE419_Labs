@@ -45,17 +45,17 @@ public class KVClientServerMessage implements KVMessage, Serializable {
     }
 
     @Override
-	public String getKey(){
+    public String getKey(){
         return key;
     }
 
     @Override
-	public String getValue(){
+    public String getValue(){
         return value;
     }
 
     @Override
-	public StatusType getStatus() {
+    public StatusType getStatus() {
         return status;
     }
 
