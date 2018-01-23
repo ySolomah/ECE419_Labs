@@ -79,7 +79,7 @@ public class KVLRUCache implements IKVCache {
     }
 
     public void CacheStatus() {
-        System.out.println("\n FIFO CACHE STATUS");
+        System.out.println("\n LRU CACHE STATUS");
         for (CacheNode node : policyOrder) {
            System.out.println("Node : " + node.key
                    + "; Value : " + node.value

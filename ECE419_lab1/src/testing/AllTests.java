@@ -27,7 +27,11 @@ public class AllTests {
         //clientSuite.addTestSuite(ConnectionTest.class);
         //clientSuite.addTestSuite(InteractionTest.class); 
         //clientSuite.addTestSuite(AdditionalTest.class); 
-        clientSuite.addTestSuite(KVFIFOServerTest.class);
+        //clientSuite.addTestSuite(KVFIFOServerTest.class);
+        //clientSuite.addTestSuite(KVLRUServerTest.class); 
+        //clientSuite.addTestSuite(KVLFUServerTest.class);
+        //clientSuite.addTestSuite(KVWriteServerTest.class);
+        //clientSuite.addTestSuite(KVOverWriteServerTest.class);
         return clientSuite;
     }
     
