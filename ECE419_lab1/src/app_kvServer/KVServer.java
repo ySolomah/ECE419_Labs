@@ -62,15 +62,15 @@ public class KVServer extends Thread implements IKVServer {
         if(strategy.equals("LRU")) {
             System.out.println("LRU CACHE");
             cacheStrategy = CacheStrategy.LRU;
-            kvCache = new KVLRUCache(cacheSize, logger);
+            kvCache = new KVLRUCache(cacheSize);
         } else if (strategy.equals("LFU")) {
             System.out.println("LFU CACHE");
             cacheStrategy = CacheStrategy.LFU;
-            kvCache = new KVLFUCache(cacheSize, logger);
+            kvCache = new KVLFUCache(cacheSize);
         } else {
             System.out.println("FIFO CACHE");
             cacheStrategy = CacheStrategy.FIFO;
-            kvCache = new KVFIFOCache(cacheSize ,logger);
+            kvCache = new KVFIFOCache(cacheSize);
         }
     }
 
@@ -183,6 +183,10 @@ public class KVServer extends Thread implements IKVServer {
             String key
             ) {
         return(kvCache.Get(key));
+    }
+
+    public void CacheStatus() {
+        kvCache.CacheStatus();
     }
 
     private void putKVSyn(
@@ -349,16 +353,7 @@ public class KVServer extends Thread implements IKVServer {
                 String strategy = args[2];
                 KVServer ourServer = new KVServer(port, cacheSize, strategy);
                 ourServer.start();
-                /* TEST SUITE 
-                logger.info("Beginning test suite");
-                simpleReadWrite(ourServer);
-                clearCacheAndStorage(ourServer);
-                simpleOverWrite(ourServer);
-                simpleFifoCacheTest(ourServer);
-                simpleLruCacheTest(ourServer);
-                simpleLfuCacheTest(ourServer);
-                /* END TEST SUITE */
-            }
+           }
         } catch (IOException e) {
             System.out.println("Error! Unable to initialize logger!");
             e.printStackTrace();
@@ -406,33 +401,6 @@ public class KVServer extends Thread implements IKVServer {
             ctx.inStorage("Hello");
         } catch (Exception e) {
             logger.error("Failed Simple test");
-            e.printStackTrace();
-        }
-    }
-
-    public static void simpleFifoCacheTest(KVServer ctx) {
-        logger.info("SIMPLE FIFO CACHE TEST");
-        clearCacheAndStorage(ctx);
-        try {
-            ctx.putKV("A", "1");
-            ctx.inCache("A");
-            ctx.inCache("B");
-            ctx.inCache("C");
-            ctx.putKV("B", "1");
-            ctx.inCache("A");
-            ctx.inCache("B");
-            ctx.inCache("C");
-            ctx.putKV("C", "1");
-            ctx.inCache("A");
-            ctx.inCache("B");
-            ctx.inCache("C");
-            ctx.putKV("A", "2");
-            ctx.putKV("A", "3");
-            ctx.inCache("A");
-            ctx.inCache("B");
-            ctx.inCache("C");
-        } catch (Exception e) {
-            logger.error("fifo test fail");
             e.printStackTrace();
         }
     }

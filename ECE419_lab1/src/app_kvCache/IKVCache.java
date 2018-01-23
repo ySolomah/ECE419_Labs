@@ -9,4 +9,5 @@ public interface IKVCache {
     public String Get(String key);
     public void Delete(String key);
     public void Insert(String key, String value);
+    public void CacheStatus();
 }

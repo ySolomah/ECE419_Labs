@@ -10,15 +10,13 @@ public class KVLRUCache implements IKVCache {
     public ConcurrentLinkedDeque<CacheNode> policyOrder;
 
     public int cacheSize;
-    private Logger logger;
 
+    private static Logger logger = Logger.getRootLogger();
 
-
-    public KVLRUCache(int cacheSize, Logger logger) {
+    public KVLRUCache(int cacheSize) {
         cache = new ConcurrentHashMap<String, String>();
         policyOrder = new ConcurrentLinkedDeque<CacheNode>();
         this.cacheSize = cacheSize;
-        this.logger = logger;
     }
 
     public void Clear() {
@@ -78,5 +76,15 @@ public class KVLRUCache implements IKVCache {
             logger.info("Removing: " + removeNode.key + " with value: " + removeNode.value);
         }
         return;
+    }
+
+    public void CacheStatus() {
+        System.out.println("\n FIFO CACHE STATUS");
+        for (CacheNode node : policyOrder) {
+           System.out.println("Node : " + node.key
+                   + "; Value : " + node.value
+                   + "; policyVal : " + node.policyVal
+                   );
+        }
     }
 }

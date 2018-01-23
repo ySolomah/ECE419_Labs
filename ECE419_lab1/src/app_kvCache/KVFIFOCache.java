@@ -9,15 +9,13 @@ public class KVFIFOCache implements IKVCache {
     public ConcurrentLinkedDeque<CacheNode> policyOrder;
 
     public int cacheSize;
-    private Logger logger;
 
-
-
-    public KVFIFOCache(int cacheSize, Logger logger) {
+    private static Logger logger = Logger.getRootLogger();
+ 
+    public KVFIFOCache(int cacheSize) {
         cache = new ConcurrentHashMap<String, String>();
         policyOrder = new ConcurrentLinkedDeque<CacheNode>();
         this.cacheSize = cacheSize;
-        this.logger = logger;
     }
 
     public void Clear() {
@@ -57,5 +55,15 @@ public class KVFIFOCache implements IKVCache {
             cache.remove(removeNode.key);
         }
         return;
+    }
+
+    public void CacheStatus() {
+        System.out.println("\n FIFO CACHE STATUS");
+        for (CacheNode node : policyOrder) {
+           System.out.println("Node : " + node.key
+                   + "; Value : " + node.value
+                   + "; policyVal : " + node.policyVal
+                   );
+        }
     }
 }
