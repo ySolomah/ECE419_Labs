@@ -31,11 +31,15 @@ public class KVWriteServerTest extends TestCase {
     public void testSimpleReadWrite() {
         logger.info("SIMPLE READ WRITE TEST");
         clearCacheAndStorage();
+        String A, B;
         try{
             ctx.putKV("Hello", "1");
             ctx.putKV("Jum", "3");
-            ctx.inStorage("Hello");
-            ctx.inCache("Hello");
+            A = ctx.searchStorage("Hello");
+            B = ctx.searchStorage("Jum");
+            if(!A.equals("1") || !B.equals("3")) {
+                fail("Failed simple write test");
+            }
         } catch (Exception e) {
             logger.error("Failed Simple test");
             e.printStackTrace();

@@ -32,27 +32,40 @@ public class KVFIFOServerTest extends TestCase {
     public void testSimpleFifoCache() {
         logger.info("SIMPLE FIFO CACHE TEST");
         clearCacheAndStorage();
+        boolean A, B, C;
         try {
             ctx.putKV("A", "1");
             ctx.CacheStatus();
-            ctx.inCache("A");
-            ctx.inCache("B");
-            ctx.inCache("C");
+            A = ctx.inCache("A");
+            B = ctx.inCache("B");
+            C = ctx.inCache("C");
+            if(!A || B || C) {
+                fail("Fail FIFO cache");
+            }
             ctx.putKV("B", "1");
             ctx.CacheStatus();
-            ctx.inCache("A");
-            ctx.inCache("B");
-            ctx.inCache("C");
+            A = ctx.inCache("A");
+            B = ctx.inCache("B");
+            C = ctx.inCache("C");
+            if(!A || !B || C) {
+                fail("Fail FIFO cache");
+            }
             ctx.putKV("C", "1");
             ctx.CacheStatus();
-            ctx.inCache("A");
-            ctx.inCache("B");
-            ctx.inCache("C");
+            A = ctx.inCache("A");
+            B = ctx.inCache("B");
+            C = ctx.inCache("C");
+            if(A || !B || !C) {
+                fail("Fail FIFO cache");
+            }
             ctx.putKV("A", "2");
             ctx.CacheStatus();
-            ctx.inCache("A");
-            ctx.inCache("B");
-            ctx.inCache("C");
+            A = ctx.inCache("A");
+            B = ctx.inCache("B");
+            C = ctx.inCache("C");
+            if(!A || B || !C) {
+                fail("Fail FIFO cache");
+            }
         } catch (Exception e) {
             logger.error("fifo test fail");
             e.printStackTrace();

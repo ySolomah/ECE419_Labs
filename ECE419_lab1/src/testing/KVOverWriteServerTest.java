@@ -31,14 +31,26 @@ public class KVOverWriteServerTest extends TestCase {
     public void testSimpleOverWrite() {
         logger.info("SIMPLE OVER WRITE TEST");
         clearCacheAndStorage();
+        String A;
+        String B;
+        String C;
         try {
             ctx.putKV("Hello", "1");
             ctx.putKV("HelloThere", "2");
             ctx.putKV("Hello", "3");
-            ctx.inStorage("Hello");
-            ctx.inStorage("HellowThere");
+            A = ctx.searchStorage("Hello");
+            B = ctx.searchStorage("HellowThere");
+            C = ctx.searchStorage("HelloThere");
+            if(!A.equals("3") || B != null || !C.equals("2")) {
+                fail("Failed overwrite test");
+            }
             ctx.putKV("Hello", "");
-            ctx.inStorage("Hello");
+            A = ctx.searchStorage("Hello");
+            B = ctx.searchStorage("HellowThere");
+            C = ctx.searchStorage("HelloThere");
+            if(A != null || B != null || !C.equals("2")) {
+                fail("Failed overwrite test");
+            }
         } catch (Exception e) {
             logger.error("Failed Simple test");
             e.printStackTrace();

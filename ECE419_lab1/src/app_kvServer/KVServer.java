@@ -119,6 +119,14 @@ public class KVServer extends Thread implements IKVServer {
         return(false);
     }
 
+    public boolean inCacheNon(String key){
+        String ret = kvCache.GetNonUpdate(key);
+        if(ret != null && !ret.isEmpty()) {
+            return(true);
+        }
+        return(false);
+    }
+
     @Override
     public String getKV(String key) throws Exception{
         String myString = null;

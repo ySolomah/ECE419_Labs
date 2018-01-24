@@ -41,6 +41,10 @@ public class KVLRUCache implements IKVCache {
         return(foundVal);
     }
 
+    public String GetNonUpdate(String key) {
+        return(cache.get(key));
+    }
+
     public void Delete(String key) {
         cache.remove(key);
         for(CacheNode node : policyOrder) {
