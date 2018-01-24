@@ -31,17 +31,48 @@ public class KVLRUServerTest extends TestCase {
     public void testSimpleLruCache() {
         logger.info("SIMPLE LRU CACHE TEST");
         clearCacheAndStorage();
+        boolean A, B, C;
         try {
             ctx.putKV("A", "1");
             ctx.CacheStatus();
+            A = ctx.inCacheNon("A");
+            B = ctx.inCacheNon("B");
+            C = ctx.inCacheNon("C");
+            if(!A || B || C) {
+                fail("Fail LRU cache");
+            } 
             ctx.putKV("B", "1");
             ctx.CacheStatus();
+            A = ctx.inCacheNon("A");
+            B = ctx.inCacheNon("B");
+            C = ctx.inCacheNon("C");
+            if(!A || !B || C) {
+                fail("Fail LRU cache");
+            }
             ctx.putKV("A", "2");
             ctx.CacheStatus();
+            A = ctx.inCacheNon("A");
+            B = ctx.inCacheNon("B");
+            C = ctx.inCacheNon("C");
+            if(!A || !B || C) {
+                fail("Fail LRU cache");
+            } 
             ctx.putKV("C", "1");
             ctx.CacheStatus();
+            A = ctx.inCacheNon("A");
+            B = ctx.inCacheNon("B");
+            C = ctx.inCacheNon("C");
+            if(!A || B || !C) {
+                fail("Fail LRU cache");
+            } 
             ctx.putKV("A", "3");
             ctx.CacheStatus();
+            A = ctx.inCacheNon("A");
+            B = ctx.inCacheNon("B");
+            C = ctx.inCacheNon("C");
+            if(!A || B || !C) {
+                fail("Fail LRU cache");
+            } 
         } catch (Exception e) {
             logger.error("LRU test fail");
             e.printStackTrace();
