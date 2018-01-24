@@ -24,14 +24,14 @@ public class AllTests {
     
     public static Test suite() {
         TestSuite clientSuite = new TestSuite("Basic Storage ServerTest-Suite");
-        //clientSuite.addTestSuite(ConnectionTest.class);
-        //clientSuite.addTestSuite(InteractionTest.class); 
-        //clientSuite.addTestSuite(AdditionalTest.class); 
-        //clientSuite.addTestSuite(KVFIFOServerTest.class);
-        //clientSuite.addTestSuite(KVLRUServerTest.class); 
-        //clientSuite.addTestSuite(KVLFUServerTest.class);
-        //clientSuite.addTestSuite(KVWriteServerTest.class);
-        //clientSuite.addTestSuite(KVOverWriteServerTest.class);
+        clientSuite.addTestSuite(ConnectionTest.class);
+        clientSuite.addTestSuite(InteractionTest.class); 
+        clientSuite.addTestSuite(AdditionalTest.class); 
+        clientSuite.addTestSuite(KVFIFOServerTest.class);
+        clientSuite.addTestSuite(KVLRUServerTest.class); 
+        clientSuite.addTestSuite(KVLFUServerTest.class);
+        clientSuite.addTestSuite(KVWriteServerTest.class);
+        clientSuite.addTestSuite(KVOverWriteServerTest.class);
         return clientSuite;
     }
     
