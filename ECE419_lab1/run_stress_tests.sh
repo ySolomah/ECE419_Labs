@@ -18,6 +18,7 @@ do
     do
         # start up the server
         java -jar m1-server.jar $port $cache_size $cache_scheme &
+        server_pid=$!
         for r in "${ratio[@]}"
         do
             for c in "${concurrency[@]}"
@@ -25,6 +26,7 @@ do
                 java -jar m1-stress.jar $server $port $total_requests $c $r > stress_results/stress_test_${r}_${c}_${cache_size}_${cache_method}.txt
             done
         done
+        kill $server_pid
     done
 done
 
