@@ -47,6 +47,8 @@ public class KVClient implements IKVClient {
     @Override
     public void newConnection(String hostname, int port) throws Exception {
         try{
+            serverAddress = hostname;
+            serverPort = port;
             kvStore = getStore();
             System.out.print(PROMPT + "Connecting to "+hostname+"/"+port+"\n");
             kvStore.connect();
