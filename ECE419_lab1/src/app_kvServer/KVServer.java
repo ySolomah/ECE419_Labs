@@ -76,7 +76,7 @@ public class KVServer extends Thread implements IKVServer {
 
     @Override
     public int getPort(){
-        return this.port;
+        return serverSocket.getLocalPort();
     }
 
     @Override
@@ -314,6 +314,7 @@ public class KVServer extends Thread implements IKVServer {
      logger.info("initialize server ...");
         try {
             serverSocket = new ServerSocket(port);
+            serverSocket.setReuseAddress(true);
             logger.info("Server listening on port: "
                     + serverSocket.getLocalPort());
             return (true);
