@@ -17,6 +17,8 @@ import java.nio.file.Paths;
 import java.nio.file.*;
 import java.nio.charset.Charset;
 
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import KVCache.*;
 
 import client_connection.ClientConnection; 
@@ -41,6 +43,9 @@ public class KVServer extends Thread implements IKVServer {
     protected boolean running;
     protected ServerSocket serverSocket;
 
+
+    private final ReentrantReadWriteLock readWriteLock =
+        new ReentrantReadWriteLock();
     private static Logger logger = Logger.getRootLogger();
     private static String fileName = "kv.txt";
 
@@ -143,7 +148,9 @@ public class KVServer extends Thread implements IKVServer {
     }
 
     public String searchStorage(String key) {
+        readWriteLock.readLock().lock();
         try {
+            try {
                 BufferedReader br = new BufferedReader(new FileReader(fileName));
                 String line = "";
                 while((line = br.readLine()) != null) {
@@ -154,9 +161,10 @@ public class KVServer extends Thread implements IKVServer {
                         return(lineSplit[1]);
                     }
                 }
-        } catch (Exception e) {
-            
-        }
+            } catch (Exception e) {
+                
+            }
+        } finally { readWriteLock.readLock().unlock(); }
         return(null);
     }
 
@@ -205,42 +213,44 @@ public class KVServer extends Thread implements IKVServer {
         boolean completedRead = false;
         ArrayList<kvContainer> keyValues = new ArrayList<kvContainer>();
         boolean foundKey = false;
-
-        try{
-            File file  = new File(
-                fileName
-                );
-            file.createNewFile();
-            FileReader mainFile = new FileReader(fileName);
-            BufferedReader br = new BufferedReader(mainFile);
-            String line;
-            while( (line = br.readLine()) != null) {
-                logger.info("Read line in " + fileName + "'" + line + "'");
-                String[] keyValue = line.split(" ");
-                if(!foundKey && keyValue[0].equals(key)) {
-                    foundKey = true;
-                    if(value.equals("") || value == null || value.isEmpty() || value.equals("null")) {
-                        logger.info("Clearing key: " + key + " from storage");
-                        continue;
-                    } else {
-                        keyValue[1] = value;
+        readWriteLock.readLock().lock();
+        try {
+            try {
+                File file  = new File(
+                    fileName
+                    );
+                file.createNewFile();
+                FileReader mainFile = new FileReader(fileName);
+                BufferedReader br = new BufferedReader(mainFile);
+                String line;
+                while( (line = br.readLine()) != null) {
+                    logger.info("Read line in " + fileName + "'" + line + "'");
+                    String[] keyValue = line.split(" ");
+                    if(!foundKey && keyValue[0].equals(key)) {
+                        foundKey = true;
+                        if(value.equals("") || value == null || value.isEmpty() || value.equals("null")) {
+                            logger.info("Clearing key: " + key + " from storage");
+                            continue;
+                        } else {
+                            keyValue[1] = value;
+                        }
                     }
+                    keyValues.add(new kvContainer(
+                        keyValue[0],
+                        keyValue[1]
+                    ));
                 }
-                keyValues.add(new kvContainer(
-                    keyValue[0],
-                    keyValue[1]
-                ));
+            } catch (FileNotFoundException fnfe) {
+                logger.error("Failed to read file " + fileName);
+                fnfe.printStackTrace();
+                throw new Exception("Failed file");
+            } catch (IOException ioe) {
+                System.err.println(ioe);
+                logger.error("IOE: " + fileName);
+                ioe.printStackTrace();
+                throw new Exception("Failed file");
             }
-        } catch (FileNotFoundException fnfe) {
-            logger.error("Failed to read file " + fileName);
-            fnfe.printStackTrace();
-            throw new Exception("Failed file");
-        } catch (IOException ioe) {
-            System.err.println(ioe);
-            logger.error("IOE: " + fileName);
-            ioe.printStackTrace();
-            throw new Exception("Failed file");
-        }
+        } finally { readWriteLock.readLock().unlock(); }
 
         if(!foundKey) {
             keyValues.add(new kvContainer(
@@ -267,9 +277,12 @@ public class KVServer extends Thread implements IKVServer {
                 sb.toString().getBytes()
                 );
         File renameTemp = new File("temp" + fileName);
-        File newFile = new File(renameTemp.getParent(), fileName);
-        newFile.delete();
-        Files.move(renameTemp.toPath(), newFile.toPath());
+        readWriteLock.writeLock().lock();
+        try {
+            File newFile = new File(renameTemp.getParent(), fileName);
+            newFile.delete();
+            Files.move(renameTemp.toPath(), newFile.toPath());
+        } finally { readWriteLock.writeLock().unlock(); }
         return;
     }
 
@@ -282,8 +295,11 @@ public class KVServer extends Thread implements IKVServer {
 
     @Override
     public void clearStorage(){
-        File file = new File(fileName);
-        file.delete();
+        readWriteLock.writeLock().lock();
+        try {
+            File file = new File(fileName);
+            file.delete();
+        } finally { readWriteLock.writeLock().unlock(); }
     }
 
     @Override
