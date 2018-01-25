@@ -297,6 +297,7 @@ public class KVServer extends Thread implements IKVServer {
     public void clearStorage(){
         readWriteLock.writeLock().lock();
         try {
+            kvCache.Clear();
             File file = new File(fileName);
             file.delete();
         } finally { readWriteLock.writeLock().unlock(); }
