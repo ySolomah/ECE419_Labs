@@ -68,11 +68,14 @@ public class KVLFUCache implements IKVCache {
             int min = Integer.MAX_VALUE;
             CacheNode candidate = null;
             for (CacheNode nodeToRemove : policyOrder) {
-                if(nodeToRemove.policyVal <= min) {
-                    if(candidate == null || (candidate != null && (!nodeToRemove.key.equals(key)))) {
+                if(nodeToRemove.policyVal <= min && !nodeToRemove.key.equals(key)) {
+                    if(!nodeToRemove.key.equals(key)) {
                         min = nodeToRemove.policyVal;
                         candidate = nodeToRemove;
                     }
+                }
+                if(candidate == null) {
+                    candidate = node;
                 }
             }
             Delete(candidate.key);
