@@ -19,6 +19,11 @@
   <property name="serverjar.file"      value="m1-server.jar"/>
   <property name="servermanifest.file" value="SERVER_MANIFEST.MF"/>
   <property name="servermain.class" value="app_kvServer.KVServer"/>
+  
+  <!-- Configuration for stress testing -->
+  <property name="stressjar.file"      value="m1-stress.jar"/>
+  <property name="stressmanifest.file" value="STRESS_MANIFEST.MF"/>
+  <property name="stressmain.class" value="testing.StressTester"/>
 
   <!-- path to libraries-->
   <path id="external.jars">
@@ -102,9 +107,27 @@
       <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
     </jar>
   </target>
+  
+  <!-- build stress-testing jar -->
+  <target name="build-stress-jar" depends="build">
+    <delete file="${stressjar.file}" />
+    <delete file="${stressmanifest.file}" />
+
+    <manifest file="${stressmanifest.file}" >
+      <attribute name="built-by" value="${user.name}" />
+      <attribute name="Main-Class" value="${stressmain.class}" />
+      <attribute name="Class-Path" value="${project.classpath}"/>
+    </manifest>
+
+    <jar destfile="${stressjar.file}" basedir="${build.dir}"
+        manifest="${stressmanifest.file}">
+      <fileset dir="${build.dir}" includes="**/*.class" />
+      <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
+    </jar>
+  </target>
 
   <!-- generate separate jar files for client and server application -->
-  <target name="build-jar" depends="build-client-jar, build-server-jar" />
+  <target name="build-jar" depends="build-client-jar, build-server-jar, build-stress-jar" />
 
   <!-- run test cases -->
   <target name="test" depends="build">
