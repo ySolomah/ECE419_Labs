@@ -45,6 +45,11 @@ public class TesterThread implements Runnable {
         int num_disconnects = 0;
         
         // send gets
+        try{
+            KVMessage ret = k.put(key, value);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         long startTime = System.nanoTime();
         for(int i = 0; i < _num_gets; ++i) {
             try {
