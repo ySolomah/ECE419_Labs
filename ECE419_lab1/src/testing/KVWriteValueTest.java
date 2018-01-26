@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 import logger.LogSetup;
 import org.apache.log4j.Logger;
 
-public class KVWriteServerTest extends TestCase {
+public class KVWriteValueTest extends TestCase {
 
     private KVServer ctx;
     private static Logger logger = Logger.getRootLogger();
@@ -33,11 +33,11 @@ public class KVWriteServerTest extends TestCase {
         clearCacheAndStorage();
         String A, B;
         try{
-            ctx.putKV("Hello", "1");
-            ctx.putKV("Jum", "3");
+            ctx.putKV("Hello", "1 hello 1 ");
+            ctx.putKV("Jum", "3  bgwai    4   ");
             A = ctx.searchStorage("Hello");
             B = ctx.searchStorage("Jum");
-            if(!A.equals("1") || !B.equals("3")) {
+            if(!A.equals("1 hello 1") || !B.equals("3  bgwai    4")) {
                 System.out.println("Given A: " + "'" + A + "'");
                 System.out.println("Given B: " + "'" + B + "'");
                 fail("Failed simple write test");

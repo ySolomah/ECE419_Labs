@@ -31,6 +31,7 @@ public class AllTests {
         clientSuite.addTestSuite(KVLRUServerTest.class); 
         clientSuite.addTestSuite(KVLFUServerTest.class);
         clientSuite.addTestSuite(KVWriteServerTest.class);
+        clientSuite.addTestSuite(KVWriteValueTest.class);
         clientSuite.addTestSuite(KVOverWriteServerTest.class);
         return clientSuite;
     }

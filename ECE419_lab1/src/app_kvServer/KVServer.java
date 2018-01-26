@@ -132,6 +132,30 @@ public class KVServer extends Thread implements IKVServer {
         return(false);
     }
 
+    private String[] splitByUniqueByte(byte delim, String in_str) {
+        StringBuilder keySb = new StringBuilder();
+        StringBuilder valueSb = new StringBuilder();
+        char[] in = in_str.toCharArray();
+        String[] out = new String[2];
+        boolean inKey = true;
+        System.out.println("Line input: " + in_str);
+        for (int i = 0; i < in.length; i++) {
+            if((byte) in[i] == 0x1e) {
+                inKey = false;
+                System.out.println("Found byte");
+            } else {
+                if(inKey) {
+                    keySb.append(in[i]);                    
+                } else {
+                    valueSb.append(in[i]);
+                }
+            }
+        }
+        out[0] = keySb.toString().trim();
+        out[1] = valueSb.toString().trim();
+        return(out);
+    }
+
     @Override
     public String getKV(String key) throws Exception{
         String myString = null;
@@ -155,7 +179,8 @@ public class KVServer extends Thread implements IKVServer {
                 String line = "";
                 while((line = br.readLine()) != null) {
                     String[] lineSplit = 
-                        line.split(" ");
+                        splitByUniqueByte((byte) 0x1e, line);
+                        //line.split(new String(new byte[] {0x1e}));
                     if(lineSplit[0].equals(key)) {
                         br.close();
                         return(lineSplit[1]);
@@ -225,7 +250,8 @@ public class KVServer extends Thread implements IKVServer {
                 String line;
                 while( (line = br.readLine()) != null) {
                     logger.info("Read line in " + fileName + "'" + line + "'");
-                    String[] keyValue = line.split(" ");
+                    //String[] keyValue = line.split(new String(new byte[] {0x1e}));
+                    String[] keyValue = splitByUniqueByte((byte) 0x1e, line);
                     if(!foundKey && keyValue[0].equals(key)) {
                         foundKey = true;
                         if(value.equals("") || value == null || value.isEmpty() || value.equals("null")) {
@@ -268,7 +294,7 @@ public class KVServer extends Thread implements IKVServer {
         for(kvContainer kvPair : keyValues) {
             sb.append(
                     (kvPair.key 
-                    + " " 
+                    + new String(new byte[] {0x1e}) 
                     + kvPair.value
                     + " \n")
                     );
