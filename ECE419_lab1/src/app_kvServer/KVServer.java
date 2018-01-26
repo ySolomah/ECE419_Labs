@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.*;
 import java.nio.charset.Charset;
+import java.util.regex.Pattern;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -139,7 +140,8 @@ public class KVServer extends Thread implements IKVServer {
         String[] out = new String[2];
         boolean inKey = true;
         System.out.println("Line input: " + in_str);
-        for (int i = 0; i < in.length; i++) {
+        int last_limiter = in_str.lastIndexOf('"');
+        for (int i = 0; i < last_limiter; i++) {
             if((byte) in[i] == 0x1e) {
                 inKey = false;
                 System.out.println("Found byte");
@@ -151,8 +153,8 @@ public class KVServer extends Thread implements IKVServer {
                 }
             }
         }
-        out[0] = keySb.toString().trim();
-        out[1] = valueSb.toString().trim();
+        out[0] = keySb.toString();
+        out[1] = valueSb.toString();
         return(out);
     }
 
@@ -293,9 +295,9 @@ public class KVServer extends Thread implements IKVServer {
         StringBuilder sb = new StringBuilder();
         for(kvContainer kvPair : keyValues) {
             sb.append(
-                    (kvPair.key 
+                    (kvPair.key
                     + new String(new byte[] {0x1e}) 
-                    + kvPair.value
+                    + kvPair.value + '"'
                     + " \n")
                     );
         }
