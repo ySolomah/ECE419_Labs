@@ -66,15 +66,12 @@ public class KVServer extends Thread implements IKVServer {
         this.cacheSize = cacheSize;
         this.strategy = strategy;
         if(strategy.equals("LRU")) {
-            System.out.println("LRU CACHE");
             cacheStrategy = CacheStrategy.LRU;
             kvCache = new KVLRUCache(cacheSize);
         } else if (strategy.equals("LFU")) {
-            System.out.println("LFU CACHE");
             cacheStrategy = CacheStrategy.LFU;
             kvCache = new KVLFUCache(cacheSize);
         } else {
-            System.out.println("FIFO CACHE");
             cacheStrategy = CacheStrategy.FIFO;
             kvCache = new KVFIFOCache(cacheSize);
         }
@@ -139,12 +136,10 @@ public class KVServer extends Thread implements IKVServer {
         char[] in = in_str.toCharArray();
         String[] out = new String[2];
         boolean inKey = true;
-        System.out.println("Line input: " + in_str);
         int last_limiter = in_str.lastIndexOf('"');
         for (int i = 0; i < last_limiter; i++) {
             if((byte) in[i] == 0x1e) {
                 inKey = false;
-                System.out.println("Found byte");
             } else {
                 if(inKey) {
                     keySb.append(in[i]);                    

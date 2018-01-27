@@ -13,7 +13,7 @@ public class InteractionTest extends TestCase {
     private KVStore kvClient;
     
     public void setUp() {
-        kvClient = new KVStore("localhost", 50000);
+        kvClient = new KVStore("localhost", 5000);
         try {
             kvClient.connect();
         } catch (Exception e) {
@@ -38,7 +38,6 @@ public class InteractionTest extends TestCase {
             ex = e;
             e.printStackTrace();
         }
-        System.out.println("Message: " + response.getStatus().name());
         assertTrue(response.getStatus() == StatusType.PUT_SUCCESS);
         assertTrue(ex == null);
     }
@@ -112,7 +111,7 @@ public class InteractionTest extends TestCase {
             } catch (Exception e) {
                 ex = e;
             }
-        
+        System.out.println("TESTGET: " + response.getValue());
         assertTrue(ex == null && response.getValue().equals("bar"));
     }
 

@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.lang.IllegalArgumentException;
 
 import org.apache.log4j.Logger;
 
@@ -44,10 +45,9 @@ public class KVStore implements KVCommInterface {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("There was an error connecting to a new port");
             logger.error("Attempted to connect when socket was already open");
             disconnect();
-            throw new Exception("Tried connecting with client socket!");
+            throw e;
         }
     }
 
@@ -75,11 +75,28 @@ public class KVStore implements KVCommInterface {
    
     private KVMessage sendRequestAndReponse(KVClientServerMessage to_send) throws Exception {
         // send the request
+
+        // check for illegal keys
+        if(to_send.getKey().contains(" ") || to_send.getKey().length() == 0 || to_send.getKey().length() > 20) {
+            logger.error("Key contains a space or empty - not legal");
+            throw new IllegalArgumentException("Illegal key");
+        }
+
+        // check for illegal values
+        if(to_send.getStatus() == KVMessage.StatusType.PUT && to_send.getValue() != null && to_send.getValue().length() > 120000) {
+            logger.error("Value is over 120kB long - not legal");
+            throw new IllegalArgumentException("Illegal value");
+        }
+
+        // check for open socket and message being present
         if (to_send != null && _output != null) {
             KVClientServerMessage.sendMessage(to_send, _output);
         } else {
             logger.error("Could not serialize KVMessage: " + to_send);
-            throw new IOException("Could not serialize KVMessage");
+            if(to_send == null)
+                throw new IOException("Could not serialize KVMessage - no message");
+            else
+                throw new IOException("Could not serialize KVMessage - no stream");
         }
 
         logger.info("Serialize and wrote KVMessage - waiting for response");
@@ -101,7 +118,20 @@ public class KVStore implements KVCommInterface {
         logger.debug("Sending PUT request");
         KVClientServerMessage to_send = new KVClientServerMessage(key, value);
         logger.debug("Received response");
-        return sendRequestAndReponse(to_send);
+        KVMessage k;
+        try {
+            k = sendRequestAndReponse(to_send);
+            return k;
+        } catch (IllegalArgumentException e) {
+            if (value == null || value.equals("") || value.equals("null")) {
+                k = new KVClientServerMessage(KVMessage.StatusType.DELETE_ERROR, key, value);
+            } else {
+                k = new KVClientServerMessage(KVMessage.StatusType.PUT_ERROR, key, value);
+            }
+            return k;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @Override
@@ -111,6 +141,14 @@ public class KVStore implements KVCommInterface {
         logger.debug("Sending PUT request");
         KVClientServerMessage to_send = new KVClientServerMessage(key);
         logger.debug("Receive response");
-        return sendRequestAndReponse(to_send);
+        KVMessage k;
+        try {
+            return sendRequestAndReponse(to_send);
+        } catch (IllegalArgumentException e) {
+            k = new KVClientServerMessage( KVMessage.StatusType.GET_ERROR, key, "");
+            return k;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

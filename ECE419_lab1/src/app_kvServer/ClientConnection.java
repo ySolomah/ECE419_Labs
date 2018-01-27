@@ -96,7 +96,7 @@ public class ClientConnection implements Runnable {
             success_mode = KVMessage.StatusType.GET_SUCCESS; 
         } else if (k.getStatus() == KVMessage.StatusType.PUT) {
             // check if delete
-            if (k.getValue().equals("null")) {
+            if (k.getValue() == null || k.getValue().equals("") || k.getValue().equals("null")) {
                success_mode = KVMessage.StatusType.DELETE_SUCCESS;
             } else {
                 // assume put update - key already exists
@@ -122,7 +122,7 @@ public class ClientConnection implements Runnable {
             failure_mode = KVMessage.StatusType.GET_ERROR;
         } else if (k.getStatus() == KVMessage.StatusType.PUT) {
             // check if delete
-            if (k.getValue().equals("null")) {
+            if (k.getValue() == null || k.getValue().equals("") || k.getValue().equals("null")) {
                failure_mode = KVMessage.StatusType.DELETE_ERROR;
             } else {
                 failure_mode = KVMessage.StatusType.PUT_ERROR;

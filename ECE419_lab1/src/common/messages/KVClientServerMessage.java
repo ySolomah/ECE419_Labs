@@ -92,7 +92,7 @@ public class KVClientServerMessage implements KVMessage {
         logger.info("Receiving a message");
         ByteArrayOutputStream s = new ByteArrayOutputStream();
         int nRead;
-        byte[] data = new byte[100];
+        byte[] data = new byte[120123];
         int i = 0;
         KVMessage.StatusType st;
         String key;
