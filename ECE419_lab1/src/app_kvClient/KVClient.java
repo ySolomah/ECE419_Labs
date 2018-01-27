@@ -204,7 +204,6 @@ public class KVClient implements IKVClient {
                     //running = true only if kvStore is
                     //initialized with a port and address.
                     try{
-                        System.out.println("tokens before PUT: "+tokens);
                         KVMessage retMsg = kvStore.put(tokens[1], tokens[2]);
                         //Check the return msg from the server
                         if (retMsg.getStatus() == StatusType.PUT_ERROR){
