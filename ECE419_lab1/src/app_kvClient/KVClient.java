@@ -32,8 +32,6 @@ public class KVClient implements IKVClient {
     //Initialize to disconnected just to be extra safe.
     private SocketStatus status = SocketStatus.DISCONNECTED;
     
-
-
     public enum SocketStatus{
         CONNECTED,
         DISCONNECTED,
@@ -64,6 +62,7 @@ public class KVClient implements IKVClient {
         } catch (Exception e) {
             printError("Connection Failed!");
             logger.error("Connection Failed!", e);
+            throw e;
         }
     }
     
@@ -83,7 +82,7 @@ public class KVClient implements IKVClient {
     }
 
     private List<String> parseCmd(String cmdLine){
-        //Pattern From: 
+        //From: 
         //https://stackoverflow.com/questions/366202/regex-for-splitting- \
         //a-string-using-space-when-not-surrounded-by-single-or-double
         List<String> tokens = new ArrayList<String>();
@@ -100,15 +99,15 @@ public class KVClient implements IKVClient {
                 tokens.add(match.group());
             }
         }
-        for (String tok : tokens)
-            System.out.println("tok = "+tok);
+        if (tokens.contains(null) || tokens.contains("")){
+            tokens.set(2,"null");
+        }
         return tokens;
     }
     private void handleCommand(String cmdLine) {
         List<String> listTokens = parseCmd(cmdLine);
         String[] tokens = new String[listTokens.size()]; 
         tokens = listTokens.toArray(tokens);
-       
         if(tokens[0].equals("quit")) {    
             stop = true;
             //Disconnect the client if it was connected to server
@@ -130,7 +129,6 @@ public class KVClient implements IKVClient {
                         newConnection(serverAddress, serverPort);
                         running = true;
                         status = SocketStatus.CONNECTED;
-
                     } else{
                         printError("Client already connected!");
                         logger.info("Client already connected!");
@@ -138,9 +136,13 @@ public class KVClient implements IKVClient {
                 } catch(NumberFormatException nfe) {
                     printError("No valid address. Port must be a number!");
                     logger.error("Unable to parse argument <port>", nfe);
+                    status = SocketStatus.DISCONNECTED;
+                    running = false;
                 } catch (Exception e){
                     printError("Failed to establish new connection.");
                     logger.error("Failed to establish new connection.",e);
+                    status = SocketStatus.DISCONNECTED;
+                    running = false;
                 }
             } else {
                 printError("Invalid number of parameters! 3 expected.");
@@ -149,12 +151,23 @@ public class KVClient implements IKVClient {
                         
         } else if (tokens[0].equals("get")){ 
             if(tokens.length == 2){
+                if (tokens[1].contains(" ")){ 
+                    printError("Keys cannot have spaces.");
+                    logger.error("Keys cannot have spaces.");
+                }
+                if (tokens[1].isEmpty()){
+                    printError("Key cannot be empty.");
+                    logger.error("Key cannot be empty.");
+                }
                 if(running){
                     try{
                         KVMessage retMsg = kvStore.get(tokens[1]);
                         if (retMsg.getStatus() == StatusType.GET_ERROR){
                             printError("GET_ERROR received!");
                             logger.error("GET_ERROR received!");
+                        } else{
+                            System.out.println(PROMPT+"<"+retMsg.getKey()+
+                                            "> <" + retMsg.getValue() + ">");
                         }
                     } catch (Exception e){
                         printError("get failed!");
@@ -171,6 +184,7 @@ public class KVClient implements IKVClient {
                         printError("Not connected!");
                         logger.error("Not connected!");
                     }
+                    running = false;
                 } 
             } else {
                 printError("Invalid number of arguments! 2 expected.");
@@ -178,10 +192,19 @@ public class KVClient implements IKVClient {
             }  
         } else  if (tokens[0].equals("put")) {
             if(tokens.length == 3) {
+                if (tokens[1].contains(" ")){ 
+                    printError("Keys cannot have spaces.");
+                    logger.error("Keys cannot have spaces.");
+                }
+                if (tokens[1].isEmpty()){
+                    printError("Key cannot be empty.");
+                    logger.error("Key cannot be empty.");
+                }
                 if(running){
                     //running = true only if kvStore is
                     //initialized with a port and address.
                     try{
+                        System.out.println("tokens before PUT: "+tokens);
                         KVMessage retMsg = kvStore.put(tokens[1], tokens[2]);
                         //Check the return msg from the server
                         if (retMsg.getStatus() == StatusType.PUT_ERROR){
@@ -211,6 +234,7 @@ public class KVClient implements IKVClient {
                         printError("Not connected!");
                         logger.error("Not connected!");
                     }
+                    running = false;
                 }
             } else {
                 printError("Invalid number of arguments! 3 expected.");
@@ -219,7 +243,8 @@ public class KVClient implements IKVClient {
             
         } else if(tokens[0].equals("disconnect")) {
             if (running) {
-                if (status == SocketStatus.CONNECTED){
+                if (status == SocketStatus.CONNECTED ||
+                    status == SocketStatus.CONNECTION_LOST){
                     kvStore.disconnect();
                     System.out.println(PROMPT+"Client disconnected.");
                 }
