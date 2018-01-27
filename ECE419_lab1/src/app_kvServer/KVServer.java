@@ -155,6 +155,9 @@ public class KVServer extends Thread implements IKVServer {
 
     @Override
     public String getKV(String key) throws Exception{
+        if(key.length() > 20) {
+            throw new Exception("key passed excess length");
+        }
         String myString = null;
         myString = kvCache.Get(key);
         if(myString != null && !myString.isEmpty()) {
@@ -192,6 +195,9 @@ public class KVServer extends Thread implements IKVServer {
 
     @Override
     public synchronized void putKV(final String key,final String value) throws Exception {
+        if(key.length() > 20 || value.length() > 120000) {
+            throw new Exception("key and/or value passed excess length");
+        }
         logger.info("Put KV: " + key + " with value: " + value);
         Thread cacheThread = new Thread() {
             public void run() {
@@ -231,6 +237,9 @@ public class KVServer extends Thread implements IKVServer {
             String key,
             String value
             ) throws Exception {
+        if(key.length() > 20 || value.length() > 120000) {
+            throw new Exception("key and/or value passed excess length");
+        }
         logger.info("Putting " + key + " with value: " + value + " into file " + fileName);
         boolean completedRead = false;
         ArrayList<kvContainer> keyValues = new ArrayList<kvContainer>();
