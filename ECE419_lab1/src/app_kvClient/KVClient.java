@@ -10,6 +10,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 
+//For parsing user input
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.List;
+import java.util.ArrayList;
+
 import logger.LogSetup;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -26,6 +32,8 @@ public class KVClient implements IKVClient {
     //Initialize to disconnected just to be extra safe.
     private SocketStatus status = SocketStatus.DISCONNECTED;
     
+
+
     public enum SocketStatus{
         CONNECTED,
         DISCONNECTED,
@@ -74,9 +82,33 @@ public class KVClient implements IKVClient {
         }
     }
 
+    private List<String> parseCmd(String cmdLine){
+        //Pattern From: 
+        //https://stackoverflow.com/questions/366202/regex-for-splitting- \
+        //a-string-using-space-when-not-surrounded-by-single-or-double
+        List<String> tokens = new ArrayList<String>();
+        Matcher match = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'").matcher(cmdLine);
+        while (match.find()) {
+            if (match.group(1) != null) {
+                // Add double-quoted string without the quotes
+                tokens.add(match.group(1));
+            } else if (match.group(2) != null) {
+                // Add single-quoted string without the quotes
+                tokens.add(match.group(2));
+            } else {
+                // Add unquoted word
+                tokens.add(match.group());
+            }
+        }
+        for (String tok : tokens)
+            System.out.println("tok = "+tok);
+        return tokens;
+    }
     private void handleCommand(String cmdLine) {
-        String[] tokens = cmdLine.split("\\s+");
-
+        List<String> listTokens = parseCmd(cmdLine);
+        String[] tokens = new String[listTokens.size()]; 
+        tokens = listTokens.toArray(tokens);
+       
         if(tokens[0].equals("quit")) {    
             stop = true;
             //Disconnect the client if it was connected to server
