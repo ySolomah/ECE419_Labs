@@ -1,0 +1,6 @@
+*.MF
+*.class
+.nfs*
+*.swp
+.*/logs/.*
+*.swo
