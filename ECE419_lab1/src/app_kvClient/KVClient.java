@@ -62,11 +62,12 @@ public class KVClient implements IKVClient {
             serverAddress = hostname;
             serverPort = port;
             kvStore = getStore();
-            System.out.print(PROMPT + "Connecting to "+hostname+"/"+port+"\n");
             kvStore.connect();
             running = true;
             status = SocketStatus.CONNECTED;
-            System.out.print(PROMPT + "Connected\n" );
+            System.out.println(PROMPT + "<"+serverAddress+"> <"+
+                            serverPort+"> "+
+                            SocketStatus.CONNECTED.toString());
         } catch (Exception e) {
             printError("Connection Failed!");
             logger.error("Connection Failed!", e);
@@ -158,38 +159,39 @@ public class KVClient implements IKVClient {
                 if (tokens[1].contains(" ")){ 
                     printError("Keys cannot have spaces.");
                     logger.error("Keys cannot have spaces.");
-                }
-                if (tokens[1].isEmpty()){
+                } else if (tokens[1].isEmpty()){
                     printError("Key cannot be empty.");
                     logger.error("Key cannot be empty.");
-                }
-                if(running){
-                    try{
-                        KVMessage retMsg = kvStore.get(tokens[1]);
-                        if (retMsg.getStatus() == StatusType.GET_ERROR){
-                            printError("GET_ERROR received!");
-                            logger.error("GET_ERROR received!");
-                        } else{
-                            System.out.println(PROMPT+"<"+retMsg.getKey()+
-                                            "> <" + retMsg.getValue() + ">");
+                } else{
+                    if(running){
+                        try{
+                            KVMessage retMsg = kvStore.get(tokens[1]);
+                            if (retMsg.getStatus() == StatusType.GET_ERROR){
+                                printError("GET_ERROR received!");
+                                logger.error("GET_ERROR received!");
+                            } else{
+                                System.out.println(PROMPT+"<"+retMsg.getKey()+
+                                                "> <" + retMsg.getValue() + "> "+
+                                                retMsg.getStatus().toString());
+                            }
+                        } catch (Exception e){
+                            printError("get failed!");
+                            logger.error("get failed!",e);
                         }
-                    } catch (Exception e){
-                        printError("get failed!");
-                        logger.error("get failed!",e);
                     }
+                    else{
+                        if (status == SocketStatus.CONNECTED){
+                            status = SocketStatus.CONNECTION_LOST;
+                            printError("Connection lost!");
+                            logger.error("Connection lost!");
+                        } else {
+                            status = SocketStatus.DISCONNECTED;
+                            printError("Not connected!");
+                            logger.error("Not connected!");
+                        }
+                        running = false;
+                    } 
                 }
-                else{
-                    if (status == SocketStatus.CONNECTED){
-                        status = SocketStatus.CONNECTION_LOST;
-                        printError("Connection lost!");
-                        logger.error("Connection lost!");
-                    } else {
-                        status = SocketStatus.DISCONNECTED;
-                        printError("Not connected!");
-                        logger.error("Not connected!");
-                    }
-                    running = false;
-                } 
             } else {
                 printError("Invalid number of arguments! 2 expected.");
                 logger.error("Invalid number of arguments! 2 expected.");
@@ -200,44 +202,44 @@ public class KVClient implements IKVClient {
                     printError("Keys cannot have spaces.");
                     logger.error("Keys cannot have spaces.");
                 }
-                if (tokens[1].isEmpty()){
+                else if (tokens[1].isEmpty()){
                     printError("Key cannot be empty.");
                     logger.error("Key cannot be empty.");
                 }
-                if(running){
-                    //running = true only if kvStore is
-                    //initialized with a port and address.
-                    try{
-                        KVMessage retMsg = kvStore.put(tokens[1], tokens[2]);
-                        //Check the return msg from the server
-                        if (retMsg.getStatus() == StatusType.PUT_ERROR){
-                            printError("PUT_ERROR received!");
-                            logger.error("PUT_ERROR received!");
-                        } else if (retMsg.getStatus() == StatusType.PUT_SUCCESS){
-                            if (tokens[2].equals("null"))
-                                logger.info("PUT_SUCCESS received. Value deleted.");
-                            else
-                                logger.info("PUT_SUCCESS received. Value inserted.");
-                            System.out.println(PROMPT+"Value inserted.");
-                        } else if (retMsg.getStatus() == StatusType.PUT_UPDATE){
-                            System.out.println(PROMPT+"Value updated.");
-                            logger.info("PUT_UPDATE received. Value updated.");
+                else{
+                    if(running){
+                        //running = true only if kvStore is
+                        //initialized with a port and address.
+                        try{
+                            KVMessage retMsg = kvStore.put(tokens[1], tokens[2]);
+                            //Check the return msg from the server
+                            if (retMsg.getStatus() == StatusType.PUT_ERROR ||
+                                retMsg.getStatus() == StatusType.DELETE_ERROR){
+                                printError(retMsg.getStatus().toString());
+                                logger.error(retMsg.getStatus().toString());
+                            } else{
+                                logger.info("<"+tokens[1]+"> <"+tokens[2]+"> "
+                                                +retMsg.getStatus().toString());
+                                System.out.println(PROMPT+"<"+retMsg.getKey()+
+                                                "> <"+retMsg.getValue()+"> "+
+                                                retMsg.getStatus().toString());
+                            }
+                        } catch (Exception e){
+                            printError("put failed!");
+                            logger.error("put failed!",e);
                         }
-                    } catch (Exception e){
-                        printError("put failed!");
-                        logger.error("put failed!",e);
-                    }
-                } else {
-                    if (status == SocketStatus.CONNECTED){
-                        status = SocketStatus.CONNECTION_LOST;
-                        printError("Connection lost!");
-                        logger.error("Connection lost!");
                     } else {
-                        status = SocketStatus.DISCONNECTED;
-                        printError("Not connected!");
-                        logger.error("Not connected!");
+                        if (status == SocketStatus.CONNECTED){
+                            status = SocketStatus.CONNECTION_LOST;
+                            printError("Connection lost!");
+                            logger.error("Connection lost!");
+                        } else {
+                            status = SocketStatus.DISCONNECTED;
+                            printError("Not connected!");
+                            logger.error("Not connected!");
+                        }
+                        running = false;
                     }
-                    running = false;
                 }
             } else {
                 printError("Invalid number of arguments! 3 expected.");
