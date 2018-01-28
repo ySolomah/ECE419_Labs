@@ -53,11 +53,19 @@ public class KVClient implements IKVClient {
     @Override
     public void newConnection(String hostname, int port) throws Exception {
         try{
+            //Tear down old connection and 
+            //make a new one
+            if (kvStore != null) kvStore.disconnect();
+            kvStore = null;
+            running = false;
+            status = SocketStatus.DISCONNECTED;
             serverAddress = hostname;
             serverPort = port;
             kvStore = getStore();
             System.out.print(PROMPT + "Connecting to "+hostname+"/"+port+"\n");
             kvStore.connect();
+            running = true;
+            status = SocketStatus.CONNECTED;
             System.out.print(PROMPT + "Connected\n" );
         } catch (Exception e) {
             printError("Connection Failed!");
@@ -123,12 +131,8 @@ public class KVClient implements IKVClient {
                         if (status == SocketStatus.CONNECTION_LOST){
                             System.out.println(PROMPT+"Attempting to reconnect...");
                         }
-                        serverAddress = tokens[1];
-                        serverPort = Integer.parseInt(tokens[2]);
                         //Start a new connection to the server
-                        newConnection(serverAddress, serverPort);
-                        running = true;
-                        status = SocketStatus.CONNECTED;
+                        newConnection(tokens[1], Integer.parseInt(tokens[2]));
                     } else{
                         printError("Client already connected!");
                         logger.info("Client already connected!");
@@ -245,6 +249,10 @@ public class KVClient implements IKVClient {
                 if (status == SocketStatus.CONNECTED ||
                     status == SocketStatus.CONNECTION_LOST){
                     kvStore.disconnect();
+                    //Get rid of store connected on old port and addr
+                    kvStore = null;
+                    serverAddress = "";
+                    serverPort = -1;
                     System.out.println(PROMPT+"Client disconnected.");
                 }
                 status = SocketStatus.DISCONNECTED;
@@ -331,27 +339,6 @@ public class KVClient implements IKVClient {
         }
     }
    
-    /**
-     * Method to be called only by CLI to check if connection
-     * is still operational. 
-     * SocketStatus however can be checked/set by any method 
-     * that wants to check the connectivity of the client.
-     */
-    public void handleStatus(SocketStatus status) {
-        if(status == SocketStatus.CONNECTED) {
-        } else if (status == SocketStatus.DISCONNECTED) {
-            System.out.print(PROMPT);
-            System.out.println("Connection terminated: " 
-                    + serverAddress + " / " + serverPort);
-            
-        } else if (status == SocketStatus.CONNECTION_LOST) {
-            System.out.println("Connection lost: " 
-                    + serverAddress + " / " + serverPort);
-            System.out.print(PROMPT);
-        }
-        
-    }
-
     private void printError(String error){
         System.out.println(PROMPT + "Error! " +  error);
     }
