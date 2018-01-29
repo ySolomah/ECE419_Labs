@@ -120,6 +120,10 @@ public class KVClient implements IKVClient {
         List<String> listTokens = parseCmd(cmdLine);
         String[] tokens = new String[listTokens.size()]; 
         tokens = listTokens.toArray(tokens);
+        if (tokens == null || tokens.length==0){
+            //When user enters newline do nothing
+            return;
+        }
         if(tokens[0].equals("quit")) {    
             stop = true;
             //Disconnect the client if it was connected to server
