@@ -66,6 +66,35 @@ public class KVFIFOServerTest extends TestCase {
             if(!A || B || !C) {
                 fail("Fail FIFO cache");
             }
+            ctx.putKV("A", "");
+            ctx.CacheStatus();
+            A = ctx.inCache("A");
+            B = ctx.inCache("B");
+            C = ctx.inCache("C");
+            if(A || B || !C) {
+                fail("Fail FIFO cache");
+            }
+            try {
+                ctx.getKV("A");
+                fail("Found val for key A");
+            } catch (Exception e) {
+
+            }
+            ctx.putKV("C", "");
+            ctx.CacheStatus();
+            A = ctx.inCache("A");
+            B = ctx.inCache("B");
+            C = ctx.inCache("C");
+            if(A || B || C) {
+                fail("Fail FIFO cache");
+            }
+           try {
+               ctx.getKV("C");
+               fail("Found val for key C");
+           }
+           catch (Exception e) {
+
+           }
         } catch (Exception e) {
             logger.error("fifo test fail");
             e.printStackTrace();
