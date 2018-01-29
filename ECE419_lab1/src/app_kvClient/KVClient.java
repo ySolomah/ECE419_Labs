@@ -69,8 +69,8 @@ public class KVClient implements IKVClient {
                             serverPort+"> "+
                             SocketStatus.CONNECTED.toString());
         } catch (Exception e) {
-            printError("Connection Failed!");
-            logger.error("Connection Failed!", e);
+            //printError("Connection Failed!");
+            //logger.error("Connection Failed!", e);
             throw e;
         }
     }
@@ -113,10 +113,17 @@ public class KVClient implements IKVClient {
         }
         return tokens;
     }
-    private void handleCommand(String cmdLine) {
+
+    //Had to make public so we can use testcases without
+    //using reflection
+    public void handleCommand(String cmdLine) {
         List<String> listTokens = parseCmd(cmdLine);
         String[] tokens = new String[listTokens.size()]; 
         tokens = listTokens.toArray(tokens);
+        if (tokens == null || tokens.length==0){
+            //When user enters newline do nothing
+            return;
+        }
         if(tokens[0].equals("quit")) {    
             stop = true;
             //Disconnect the client if it was connected to server
@@ -139,15 +146,15 @@ public class KVClient implements IKVClient {
                         logger.info("Client already connected!");
                     }
                 } catch(NumberFormatException nfe) {
-                    printError("No valid address. Port must be a number!");
-                    logger.error("Unable to parse argument <port>", nfe);
                     status = SocketStatus.DISCONNECTED;
                     running = false;
+                    printError("Port must be a number! "+status);
+                    logger.error("Unable to parse argument <port> "+status, nfe);
                 } catch (Exception e){
-                    printError("Failed to establish new connection.");
-                    logger.error("Failed to establish new connection.",e);
                     status = SocketStatus.DISCONNECTED;
                     running = false;
+                    printError("Connection Failed! "+status);
+                    logger.error("Connection Failed! "+status,e);
                 }
             } else {
                 printError("Invalid number of parameters! 3 expected.");
@@ -180,15 +187,11 @@ public class KVClient implements IKVClient {
                         }
                     }
                     else{
-                        if (status == SocketStatus.CONNECTED){
+                        if (status == SocketStatus.CONNECTED) 
                             status = SocketStatus.CONNECTION_LOST;
-                            printError("Connection lost!");
-                            logger.error("Connection lost!");
-                        } else {
-                            status = SocketStatus.DISCONNECTED;
-                            printError("Not connected!");
-                            logger.error("Not connected!");
-                        }
+                        else status = SocketStatus.DISCONNECTED;
+                        printError(status.toString());
+                        logger.error(status.toString());
                         running = false;
                     } 
                 }
@@ -229,15 +232,11 @@ public class KVClient implements IKVClient {
                             logger.error("put failed!",e);
                         }
                     } else {
-                        if (status == SocketStatus.CONNECTED){
+                        if (status == SocketStatus.CONNECTED) 
                             status = SocketStatus.CONNECTION_LOST;
-                            printError("Connection lost!");
-                            logger.error("Connection lost!");
-                        } else {
-                            status = SocketStatus.DISCONNECTED;
-                            printError("Not connected!");
-                            logger.error("Not connected!");
-                        }
+                        else status = SocketStatus.DISCONNECTED;
+                        printError(status.toString());
+                        logger.error(status.toString());
                         running = false;
                     }
                 }
@@ -255,10 +254,10 @@ public class KVClient implements IKVClient {
                     kvStore = null;
                     serverAddress = "";
                     serverPort = -1;
-                    System.out.println(PROMPT+"Client disconnected.");
                 }
                 status = SocketStatus.DISCONNECTED;
                 running = false;
+                System.out.println(PROMPT+status.toString());
             }
             else printError("Need to connect first!");
             
