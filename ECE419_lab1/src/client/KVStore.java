@@ -39,6 +39,7 @@ public class KVStore implements KVCommInterface {
         try {
             if(_clientSocket == null) {
                 _clientSocket = new Socket(_address, _port);
+                _clientSocket.setSoTimeout(5000);
                 _output = _clientSocket.getOutputStream();
                 _input = _clientSocket.getInputStream();                  
                 logger.info("Created client socket to " + _address + ":" + String.valueOf(_port) + " successfully");

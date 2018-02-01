@@ -182,7 +182,9 @@ public class KVClient implements IKVClient {
                                                 retMsg.getStatus().toString());
                             }
                         } catch (Exception e){
-                            printError("get failed!");
+                            printError("get failed! Disconnected from connection!");
+                            running = false;
+                            status = SocketStatus.CONNECTION_LOST;
                             logger.error("get failed!",e);
                         }
                     }
@@ -228,7 +230,9 @@ public class KVClient implements IKVClient {
                                                 retMsg.getStatus().toString());
                             }
                         } catch (Exception e){
-                            printError("put failed!");
+                            running = false;
+                            status = SocketStatus.CONNECTION_LOST;
+                            printError("put failed! Disconnected from connection!");
                             logger.error("put failed!",e);
                         }
                     } else {
