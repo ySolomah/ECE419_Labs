@@ -34,6 +34,17 @@ public class KVWriteServerTest extends TestCase {
         String A, B;
         try{
             ctx.putKV("Hello", "1");
+            clearCacheAndStorage();
+            try {
+                String valGot = ctx.getKV("Hello");
+                if(valGot != null) {
+                    System.out.println("Got value: " + valGot);
+                    fail("Should not have gotten a value");
+                }
+            } catch (Exception e) {
+                System.out.println("Successfully failed to get val");
+            }
+            ctx.putKV("Hello", "1");
             ctx.putKV("Jum", "3");
             A = ctx.searchStorage("Hello");
             B = ctx.searchStorage("Jum");
