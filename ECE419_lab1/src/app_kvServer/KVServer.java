@@ -258,7 +258,8 @@ public class KVServer extends Thread implements IKVServer {
                     String[] keyValue = splitByUniqueByte((byte) 0x1e, line);
                     if(!foundKey && keyValue[0].equals(key)) {
                         foundKey = true;
-                        System.out.println("Didn't fine the key, and equals it");
+                        //System.out.println("Didn't fine the key, and equals it");
+                        System.out.println("Found key: " + keyValue[0] + " with prexisting value: " + keyValue[1]);
                         if(value.equals("") || value == null || value.isEmpty() || value.equals("null")) {
                             logger.info("Clearing key: " + key + " from storage");
                             continue;

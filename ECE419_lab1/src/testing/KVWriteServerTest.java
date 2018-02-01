@@ -33,9 +33,11 @@ public class KVWriteServerTest extends TestCase {
         clearCacheAndStorage();
         String A, B;
         try{
+            System.out.println("Putting in hello with 1");
             ctx.putKV("Hello", "1");
             clearCacheAndStorage();
             try {
+                System.out.println("Getting hello");
                 String valGot = ctx.getKV("Hello");
                 if(valGot != null) {
                     System.out.println("Got value: " + valGot);
@@ -44,7 +46,9 @@ public class KVWriteServerTest extends TestCase {
             } catch (Exception e) {
                 System.out.println("Successfully failed to get val");
             }
+            System.out.println("Putting in hello with 1");
             ctx.putKV("Hello", "1");
+            System.out.println("Putting in jum with 3");
             ctx.putKV("Jum", "3");
             A = ctx.searchStorage("Hello");
             B = ctx.searchStorage("Jum");
