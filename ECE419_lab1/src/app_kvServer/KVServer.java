@@ -187,7 +187,7 @@ public class KVServer extends Thread implements IKVServer {
                     }
                 }
             } catch (Exception e) {
-                
+               e.printStackTrace(); 
             }
         } finally { readWriteLock.readLock().unlock(); }
         return(null);
@@ -214,7 +214,7 @@ public class KVServer extends Thread implements IKVServer {
             String key,
             String value
             ) {
-        if(value.equals("") || value.isEmpty() || value.equals("null")) {
+        if(value == null || value.equals("") || value.equals("null")) {
             logger.info("Deleting key: " + key);
             kvCache.Delete(key);
         } else {
@@ -240,7 +240,6 @@ public class KVServer extends Thread implements IKVServer {
         if(key.length() > 20 || value.length() > 120000) {
             throw new Exception("key and/or value passed excess length");
         }
-        logger.info("Putting " + key + " with value: " + value + " into file " + fileName);
         boolean completedRead = false;
         ArrayList<kvContainer> keyValues = new ArrayList<kvContainer>();
         boolean foundKey = false;
@@ -256,14 +255,15 @@ public class KVServer extends Thread implements IKVServer {
                 String line;
                 while( (line = br.readLine()) != null) {
                     logger.info("Read line in " + fileName + "'" + line + "'");
-                    //String[] keyValue = line.split(new String(new byte[] {0x1e}));
                     String[] keyValue = splitByUniqueByte((byte) 0x1e, line);
                     if(!foundKey && keyValue[0].equals(key)) {
                         foundKey = true;
+                        System.out.println("Didn't fine the key, and equals it");
                         if(value.equals("") || value == null || value.isEmpty() || value.equals("null")) {
                             logger.info("Clearing key: " + key + " from storage");
                             continue;
                         } else {
+                            logger.info("Putting " + key + " with value: " + value + " into file " + fileName);
                             keyValue[1] = value;
                         }
                     }
@@ -332,6 +332,9 @@ public class KVServer extends Thread implements IKVServer {
             kvCache.Clear();
             File file = new File(fileName);
             file.delete();
+        } catch(Exception e) {
+            logger.error("Failed to clear storage");
+            e.printStackTrace();
         } finally { readWriteLock.writeLock().unlock(); }
     }
 

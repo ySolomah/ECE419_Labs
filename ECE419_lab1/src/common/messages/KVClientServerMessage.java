@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.io.PrintWriter;
 import org.apache.log4j.Logger;
+import java.net.SocketTimeoutException;
 
 public class KVClientServerMessage implements KVMessage {
     private String key;
@@ -97,6 +98,7 @@ public class KVClientServerMessage implements KVMessage {
         KVMessage.StatusType st;
         String key;
         String value;
+        try {
         while(true) {
             nRead = _input.read();
             if(nRead == -1) continue;
@@ -151,13 +153,12 @@ public class KVClientServerMessage implements KVMessage {
                 break;
             }
         }
+        } catch(SocketTimeoutException e) {
+            throw new IOException("SocketTimeoutException occurred - exiting due to 5s timeout");
+        }
 
 
         KVMessage k = (KVMessage) new KVClientServerMessage(st, key, value) ;
-        logger.info("Successfully received message of type: " + k.getStatus().name());
-        logger.info("Key: " + k.getKey());
-        logger.info("Value: " + k.getValue());
-
         return k;  
     }
 

@@ -101,9 +101,11 @@ public class ClientConnection implements Runnable {
             } else {
                 // assume put update - key already exists
                 success_mode = KVMessage.StatusType.PUT_UPDATE;
+                System.out.println("This is a PUT with a REAL value");
                 // see if key already exists
                 try {
                     server.getKV(k.getKey());
+                    System.out.println("The key is: " + k.getKey());
                 } catch (Exception e) {
                     // this will be an update
                     success_mode = KVMessage.StatusType.PUT_SUCCESS;
