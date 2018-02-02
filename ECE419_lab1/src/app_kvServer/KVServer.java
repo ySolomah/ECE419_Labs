@@ -161,10 +161,12 @@ public class KVServer extends Thread implements IKVServer {
         String myString = null;
         myString = kvCache.Get(key);
         if(myString != null && !myString.isEmpty()) {
+            System.out.println("Found key: " + key + " In cache with val: " + myString);
             return(myString);
         } else {
             myString = searchStorage(key);
             if(myString != null && !myString.isEmpty()) {
+                System.out.println("Found key: " + key + " In Storage with val: " + myString);
                 return(myString);
             }
         }
@@ -201,12 +203,26 @@ public class KVServer extends Thread implements IKVServer {
         logger.info("Put KV: " + key + " with value: " + value);
         Thread cacheThread = new Thread() {
             public void run() {
-                putCache(key, value);
+                try {
+                    putCache(key, value);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
         cacheThread.run();
-        putKVSyn(key, value);
+        Thread storageThread = new Thread() {
+            public void run() {
+                try {
+                    putKVSyn(key, value); 
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        storageThread.run();
         cacheThread.join();
+        storageThread.join();
         return;
     }
 
@@ -215,7 +231,7 @@ public class KVServer extends Thread implements IKVServer {
             String value
             ) {
         if(value == null || value.equals("") || value.equals("null")) {
-            logger.info("Deleting key: " + key);
+            logger.info("Deleting key in cache: " + key);
             kvCache.Delete(key);
         } else {
             logger.info("Inserting into cache: " + key + " with value: " + value);
@@ -259,6 +275,7 @@ public class KVServer extends Thread implements IKVServer {
                     if(!foundKey && keyValue[0].equals(key)) {
                         foundKey = true;
                         //System.out.println("Didn't fine the key, and equals it");
+                        logger.info("Found key: " + key);
                         System.out.println("Found key: " + keyValue[0] + " with prexisting value: " + keyValue[1]);
                         if(value.equals("") || value == null || value.isEmpty() || value.equals("null")) {
                             logger.info("Clearing key: " + key + " from storage");
@@ -266,12 +283,18 @@ public class KVServer extends Thread implements IKVServer {
                         } else {
                             logger.info("Putting " + key + " with value: " + value + " into file " + fileName);
                             keyValue[1] = value;
+                            keyValues.add(new kvContainer(
+                              keyValue[0],
+                              keyValue[1]
+                            ));
                         }
+                    } else {
+                        logger.info("Putting " + key + " with value: " + value + " into file " + fileName);
+                        keyValues.add(new kvContainer(
+                            keyValue[0],
+                            keyValue[1]
+                        ));
                     }
-                    keyValues.add(new kvContainer(
-                        keyValue[0],
-                        keyValue[1]
-                    ));
                 }
             } catch (FileNotFoundException fnfe) {
                 logger.error("Failed to read file " + fileName);
@@ -285,7 +308,7 @@ public class KVServer extends Thread implements IKVServer {
             }
         } finally { readWriteLock.readLock().unlock(); }
 
-        if(!foundKey) {
+        if(!foundKey && value != null && !value.isEmpty() && !value.equals("null") && !value.equals("")) {
             keyValues.add(new kvContainer(
                         key,
                         value
